@@ -5,7 +5,7 @@ export default function HeroSection() {
     <section className="hero-section container">
       <div className="hero-content">
         <h1 className="hero-title">
-          Hello, I'm <span className="text-accent">Iyke</span>
+          Hello, I&apos;m <span className="text-accent">Iyke</span>
         </h1>
         <p className="hero-subtitle">
           ...Architecting Scalable, Logic-Driven Systems
@@ -17,7 +17,7 @@ export default function HeroSection() {
       </div>
       <div className="hero-image-wrapper">
         <Image
-          src="/iyke_profile.png"
+          src="/iyke-profile.jpg"
           alt="Iyke"
           width={400}
           height={400}
