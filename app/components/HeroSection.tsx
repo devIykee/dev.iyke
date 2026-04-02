@@ -17,7 +17,7 @@ export default function HeroSection() {
       </div>
       <div className="hero-image-wrapper">
         <Image
-          src="/iyke_headshot.png"
+          src="/iyke_profile.png"
           alt="Iyke"
           width={400}
           height={400}
