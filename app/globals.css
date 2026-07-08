@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-inter: "Inter", system-ui, sans-serif;
+  --font-jetbrains-mono: "JetBrains Mono", monospace;
+  --font-playfair: "Playfair Display", Georgia, serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Hide scrollbar for the side drawer nav */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Writer prose: quiet, legible long-form rhythm. Flat — no decorative rules
+   beyond the hairline dividers DESIGN.md prescribes. */
+.prose-writer {
+  color: var(--writer-ink, #241f1c);
+}
+.prose-writer p {
+  margin: 0 0 1.25rem;
+  line-height: 1.75;
+  font-size: 18px;
+}
+.prose-writer h2 {
+  font-family: var(--font-playfair);
+  font-size: 26px;
+  font-weight: 700;
+  margin: 2rem 0 1rem;
+}
+.prose-writer h3 {
+  font-family: var(--font-playfair);
+  font-size: 21px;
+  font-weight: 700;
+  margin: 1.75rem 0 0.75rem;
+}
+.prose-writer a {
+  color: #7b2130;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.prose-writer blockquote {
+  border-left: 2px solid #7b2130;
+  padding-left: 1rem;
+  font-style: italic;
+  margin: 1.5rem 0;
+  color: #6f665c;
+}
+.prose-writer ul,
+.prose-writer ol {
+  margin: 0 0 1.25rem 1.25rem;
+  line-height: 1.75;
+}
+.prose-writer ul {
+  list-style: disc;
+}
+.prose-writer ol {
+  list-style: decimal;
+}
+.prose-writer code {
+  font-family: var(--font-jetbrains-mono);
+  font-size: 0.9em;
+  background: #f0e9db;
+  padding: 0.1em 0.35em;
+  border-radius: 2px;
+}
