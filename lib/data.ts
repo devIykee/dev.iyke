@@ -5,12 +5,14 @@ import {
   seedMotionProjects,
   seedWriterPosts,
   seedCollaborations,
+  seedToolkitItems,
 } from "./seed";
 import type {
   DevProject,
   MotionProject,
   WriterPost,
   Collaboration,
+  ToolkitItem,
 } from "./types";
 
 /**
@@ -40,12 +42,27 @@ export async function getCollaborations(): Promise<Collaboration[]> {
   const { data, error } = await supabase
     .from("collaborations")
     .select("*")
+    .order("sort_order", { ascending: true })
     .order("org", { ascending: true });
   if (error) {
     console.error("[data] collaborations:", error.message);
     return seedCollaborations;
   }
   return data as Collaboration[];
+}
+
+export async function getToolkitItems(): Promise<ToolkitItem[]> {
+  const supabase = getAnonClient();
+  if (!supabase) return seedToolkitItems;
+  const { data, error } = await supabase
+    .from("toolkit_items")
+    .select("*")
+    .order("sort_order", { ascending: true });
+  if (error) {
+    console.error("[data] toolkit_items:", error.message);
+    return seedToolkitItems;
+  }
+  return data as ToolkitItem[];
 }
 
 export async function getMotionProjects(): Promise<MotionProject[]> {

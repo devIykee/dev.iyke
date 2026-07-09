@@ -3,7 +3,18 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export type FieldType = "text" | "textarea" | "url" | "date" | "markdown";
+export type FieldType =
+  | "text"
+  | "textarea"
+  | "url"
+  | "date"
+  | "markdown"
+  | "select";
+
+export interface SelectOption {
+  value: string;
+  label: string;
+}
 
 export interface FieldConfig {
   name: string; // key sent to the API
@@ -11,6 +22,7 @@ export interface FieldConfig {
   type: FieldType;
   required?: boolean;
   readFrom?: string; // key to prefill from when editing (defaults to `name`)
+  options?: SelectOption[]; // for type: "select"
 }
 
 export interface ResourceConfig {
@@ -20,26 +32,37 @@ export interface ResourceConfig {
   primaryField: string; // shown as row title
   secondaryField?: string; // shown as row subtitle
   fields: FieldConfig[];
+  /** Enables up/down reorder (PATCH { order: string[] }). */
+  reorderable?: boolean;
+  /** Row row-icon preview: a Material Symbols key stored in this field. */
+  iconField?: string;
+  /** Row logo preview: an image URL stored in this field. */
+  logoField?: string;
 }
 
 type Row = Record<string, unknown> & { id: string };
 
 function emptyForm(fields: FieldConfig[]): Record<string, string> {
-  return Object.fromEntries(fields.map((f) => [f.name, ""]));
+  return Object.fromEntries(
+    fields.map((f) => [
+      f.name,
+      f.type === "select" ? f.options?.[0]?.value ?? "" : "",
+    ])
+  );
 }
 
 /**
- * Generic add/edit/delete manager. Renders the existing rows and a single form
- * that toggles between "create" and "edit <id>" modes. All requests hit the
- * resource's admin endpoint, which enforces the session server-side.
+ * Generic add/edit/delete/reorder manager. Renders existing rows (with optional
+ * icon/logo preview and up/down controls) and a single form that toggles between
+ * "create" and "edit <id>". All requests hit the resource's admin endpoint,
+ * which enforces the session server-side.
  */
 export default function ResourceManager({
   config,
   initialItems,
 }: {
   config: ResourceConfig;
-  // Concrete row interfaces (DevProject, etc.) have an id but no index
-  // signature; we read arbitrary fields internally so cast to the loose Row.
+  // Concrete row interfaces have an id but no index signature; cast internally.
   initialItems: { id: string }[];
 }) {
   const router = useRouter();
@@ -124,6 +147,33 @@ export default function ResourceManager({
     }
   }
 
+  // Reorder by swapping with the neighbour, then persist the full id order.
+  async function move(index: number, dir: -1 | 1) {
+    const target = index + dir;
+    if (target < 0 || target >= items.length) return;
+    const reordered = [...items];
+    [reordered[index], reordered[target]] = [reordered[target], reordered[index]];
+    setItems(reordered); // optimistic
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch(config.endpoint, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ order: reordered.map((r) => r.id) }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error ?? "Reorder failed.");
+        await refresh(); // revert to server truth
+        return;
+      }
+      router.refresh();
+    } finally {
+      setBusy(false);
+    }
+  }
+
   const inputClass =
     "w-full border border-neutral-700 bg-black px-3 py-2 text-sm text-neutral-100 outline-none focus:border-neutral-400";
 
@@ -136,22 +186,68 @@ export default function ResourceManager({
           {items.length === 1 ? "" : "s"}
         </h2>
         <ul className="m-0 flex list-none flex-col gap-2 p-0">
-          {items.map((row) => (
+          {items.map((row, index) => (
             <li
               key={row.id}
-              className={`flex items-start justify-between gap-3 border p-3 ${
+              className={`flex items-center justify-between gap-3 border p-3 ${
                 editingId === row.id ? "border-neutral-400" : "border-neutral-800"
               }`}
             >
-              <div className="min-w-0">
-                <p className="m-0 truncate text-sm font-bold text-neutral-100">
-                  {String(row[config.primaryField] ?? "(untitled)")}
-                </p>
-                {config.secondaryField && (
-                  <p className="m-0 mt-0.5 truncate text-xs text-neutral-500">
-                    {String(row[config.secondaryField] ?? "")}
-                  </p>
+              <div className="flex min-w-0 items-center gap-3">
+                {config.reorderable && (
+                  <div className="flex flex-col">
+                    <button
+                      aria-label="Move up"
+                      onClick={() => move(index, -1)}
+                      disabled={busy || index === 0}
+                      className="leading-none text-neutral-500 hover:text-white disabled:opacity-20"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">
+                        keyboard_arrow_up
+                      </span>
+                    </button>
+                    <button
+                      aria-label="Move down"
+                      onClick={() => move(index, 1)}
+                      disabled={busy || index === items.length - 1}
+                      className="leading-none text-neutral-500 hover:text-white disabled:opacity-20"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">
+                        keyboard_arrow_down
+                      </span>
+                    </button>
+                  </div>
                 )}
+
+                {config.iconField && (
+                  <span className="material-symbols-outlined shrink-0 text-neutral-400">
+                    {String(row[config.iconField] ?? "code")}
+                  </span>
+                )}
+                {config.logoField &&
+                  (row[config.logoField] ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={String(row[config.logoField])}
+                      alt=""
+                      className="h-6 w-6 shrink-0 rounded-sm border border-neutral-700 object-contain"
+                    />
+                  ) : (
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-sm border border-neutral-700 text-[10px] text-neutral-500">
+                      {String(row[config.primaryField] ?? "?").charAt(0)}
+                    </span>
+                  ))}
+
+                <div className="min-w-0">
+                  <p className="m-0 truncate text-sm font-bold text-neutral-100">
+                    {String(row[config.primaryField] ?? "(untitled)")}
+                  </p>
+                  {config.secondaryField && (
+                    <p className="m-0 mt-0.5 truncate text-xs text-neutral-500">
+                      {String(row[config.secondaryField] ?? "")}
+                    </p>
+                  )}
+                </div>
               </div>
               <div className="flex shrink-0 gap-2">
                 <button
@@ -216,6 +312,26 @@ export default function ResourceManager({
                   className={`${inputClass} font-mono`}
                   placeholder="# Markdown supported"
                 />
+              ) : f.type === "select" ? (
+                <div className="flex items-center gap-3">
+                  {/* Live preview for icon selects */}
+                  {config.iconField === f.name && (
+                    <span className="material-symbols-outlined shrink-0 text-neutral-300">
+                      {form[f.name] || "code"}
+                    </span>
+                  )}
+                  <select
+                    value={form[f.name] ?? ""}
+                    onChange={(e) => setForm({ ...form, [f.name]: e.target.value })}
+                    className={inputClass}
+                  >
+                    {f.options?.map((o) => (
+                      <option key={o.value} value={o.value}>
+                        {o.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               ) : (
                 <input
                   type={f.type === "date" ? "date" : f.type === "url" ? "url" : "text"}

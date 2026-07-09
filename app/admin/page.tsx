@@ -3,7 +3,13 @@ import { isAuthenticated } from "@/lib/auth";
 import { getServiceClient, isSupabaseConfigured } from "@/lib/supabase";
 import AdminLogin from "./AdminLogin";
 import AdminDashboard from "./AdminDashboard";
-import type { DevProject, MotionProject, WriterPost } from "@/lib/types";
+import type {
+  DevProject,
+  MotionProject,
+  WriterPost,
+  ToolkitItem,
+  Collaboration,
+} from "@/lib/types";
 
 export const metadata: Metadata = {
   title: "Admin — Iyke",
@@ -28,16 +34,22 @@ export default async function AdminPage() {
   let dev: DevProject[] = [];
   let motion: MotionProject[] = [];
   let writer: WriterPost[] = [];
+  let toolkit: ToolkitItem[] = [];
+  let collaborations: Collaboration[] = [];
 
   if (client) {
-    const [d, m, w] = await Promise.all([
+    const [d, m, w, t, c] = await Promise.all([
       client.from("dev_projects").select("*").order("created_at", { ascending: false }),
       client.from("motion_projects").select("*").order("created_at", { ascending: false }),
       client.from("writer_posts").select("*").order("date", { ascending: false }),
+      client.from("toolkit_items").select("*").order("sort_order", { ascending: true }),
+      client.from("collaborations").select("*").order("sort_order", { ascending: true }),
     ]);
     dev = (d.data as DevProject[]) ?? [];
     motion = (m.data as MotionProject[]) ?? [];
     writer = (w.data as WriterPost[]) ?? [];
+    toolkit = (t.data as ToolkitItem[]) ?? [];
+    collaborations = (c.data as Collaboration[]) ?? [];
   }
 
   return (
@@ -46,6 +58,8 @@ export default async function AdminPage() {
       initialDev={dev}
       initialMotion={motion}
       initialWriter={writer}
+      initialToolkit={toolkit}
+      initialCollaborations={collaborations}
     />
   );
 }

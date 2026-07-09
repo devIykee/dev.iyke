@@ -3,6 +3,7 @@ import type {
   MotionProject,
   WriterPost,
   Collaboration,
+  ToolkitItem,
 } from "./types";
 
 /**
@@ -42,14 +43,47 @@ export const seedDevProjects: DevProject[] = [
 ];
 
 export const seedCollaborations: Collaboration[] = [
-  { id: "seed-col-1", org: "Vercel", role: "Core Infrastructure Contributor" },
-  { id: "seed-col-2", org: "Stripe", role: "Payment Gateway Integration Consultant" },
-  { id: "seed-col-3", org: "Linear", role: "Frontend Performance Optimization" },
+  {
+    id: "seed-col-1",
+    org: "Vercel",
+    role: "Core Infrastructure Contributor",
+    logo_url: null,
+    link_url: null,
+    sort_order: 0,
+  },
+  {
+    id: "seed-col-2",
+    org: "Stripe",
+    role: "Payment Gateway Integration Consultant",
+    logo_url: null,
+    link_url: null,
+    sort_order: 1,
+  },
+  {
+    id: "seed-col-3",
+    org: "Linear",
+    role: "Frontend Performance Optimization",
+    logo_url: null,
+    link_url: null,
+    sort_order: 2,
+  },
   {
     id: "seed-col-4",
     org: "Open Source",
     role: "Maintainer of several high-traffic npm packages",
+    logo_url: null,
+    link_url: null,
+    sort_order: 3,
   },
+];
+
+export const seedToolkitItems: ToolkitItem[] = [
+  { id: "seed-tk-1", name: "TypeScript", icon_key: "code_blocks", sort_order: 0 },
+  { id: "seed-tk-2", name: "Next.js", icon_key: "api", sort_order: 1 },
+  { id: "seed-tk-3", name: "React", icon_key: "data_object", sort_order: 2 },
+  { id: "seed-tk-4", name: "GitHub", icon_key: "terminal", sort_order: 3 },
+  { id: "seed-tk-5", name: "PostgreSQL", icon_key: "database", sort_order: 4 },
+  { id: "seed-tk-6", name: "Docker", icon_key: "dns", sort_order: 5 },
 ];
 
 export const seedMotionProjects: MotionProject[] = [

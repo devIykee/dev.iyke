@@ -33,6 +33,18 @@ export interface Collaboration {
   id: string;
   org: string;
   role: string;
+  logo_url: string | null;
+  // If set, the org name / row becomes a clickable link (often a Writer blog post).
+  link_url: string | null;
+  sort_order: number;
+}
+
+export interface ToolkitItem {
+  id: string;
+  name: string;
+  // Material Symbols icon name, e.g. "code_blocks" — same set as the Developer page.
+  icon_key: string;
+  sort_order: number;
 }
 
 // Persona identifiers used to parameterize shared layout.

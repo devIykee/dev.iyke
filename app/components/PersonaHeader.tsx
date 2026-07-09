@@ -59,9 +59,10 @@ const HEADER_THEMES: Record<Persona, HeaderTheme> = {
 };
 
 /**
- * Shared hero header: circular/rounded profile, constant H1 "Hello, I'm Iyke",
- * and the per-persona H2 tagline. Hire Me (filled) + Resume (outline) buttons
- * per DESIGN.md's button spec.
+ * Shared hero header: H1 "Hello, I'm Iyke" + per-persona H2 tagline and the
+ * Hire Me / Resume buttons on the LEFT; the profile photo on the RIGHT of the
+ * same row, vertically centered. The main content section sits full-width below.
+ * pt clears the fixed top-left hamburger from PersonaChrome.
  */
 export default function PersonaHeader({ persona }: { persona: Persona }) {
   const config = PERSONAS[persona];
@@ -69,48 +70,46 @@ export default function PersonaHeader({ persona }: { persona: Persona }) {
 
   return (
     <header
-      className={`sticky top-0 z-20 w-full border-b ${t.wrapper} ${t.border} px-4 py-4 md:px-margin`}
+      className={`w-full border-b ${t.wrapper} ${t.border} px-4 pb-8 pt-20 md:px-margin`}
     >
-      <div className="mx-auto flex max-w-bento items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          {/* Profile: real image if present, else a flat labelled placeholder frame */}
-          <div
-            className={`relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden ${t.profileShape} ${t.profileFrame}`}
-          >
-            {t.showProfileImage ? (
-              <Image
-                src="/iyke-profile.jpg"
-                alt="Portrait of Iyke"
-                fill
-                sizes="56px"
-                className="object-cover"
-                priority
-              />
-            ) : (
-              <span className="font-mono text-[9px] tracking-widest">
-                {t.profileLabel}
-              </span>
-            )}
-          </div>
+      <div className="mx-auto flex max-w-bento flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
+        {/* LEFT: heading, tagline, actions */}
+        <div className="order-2 sm:order-1">
+          <h1 className={`m-0 text-h1 font-black ${t.h1}`}>Hello, I&apos;m Iyke</h1>
+          <h2 className={`m-0 mt-2 font-normal ${t.h2}`}>{config.tagline}</h2>
 
-          <div>
-            <h1 className={`m-0 text-h1 font-black ${t.h1}`}>Hello, I&apos;m Iyke</h1>
-            <h2 className={`m-0 mt-1 font-normal ${t.h2}`}>{config.tagline}</h2>
+          <div className="mt-6 flex gap-3">
+            <button
+              className={`font-label text-label uppercase ${t.hireBtn} px-6 py-2 transition-colors`}
+            >
+              Hire Me
+            </button>
+            <button
+              className={`font-label text-label uppercase ${t.resumeBtn} px-6 py-2 transition-colors`}
+            >
+              Resume
+            </button>
           </div>
         </div>
 
-        {/* Buttons hidden on small screens; hamburger sits top-right there */}
-        <div className="mr-10 hidden gap-3 md:flex">
-          <button
-            className={`font-label text-label uppercase ${t.hireBtn} px-6 py-2 transition-colors`}
-          >
-            Hire Me
-          </button>
-          <button
-            className={`font-label text-label uppercase ${t.resumeBtn} px-6 py-2 transition-colors`}
-          >
-            Resume
-          </button>
+        {/* RIGHT: profile photo */}
+        <div
+          className={`order-1 relative flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden sm:order-2 md:h-28 md:w-28 ${t.profileShape} ${t.profileFrame}`}
+        >
+          {t.showProfileImage ? (
+            <Image
+              src="/iyke-profile.jpg"
+              alt="Portrait of Iyke"
+              fill
+              sizes="112px"
+              className="object-cover"
+              priority
+            />
+          ) : (
+            <span className="font-mono text-[9px] tracking-widest">
+              {t.profileLabel}
+            </span>
+          )}
         </div>
       </div>
     </header>

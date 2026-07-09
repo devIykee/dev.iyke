@@ -1,29 +1,21 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import PersonaHeader from "@/app/components/PersonaHeader";
 import PersonaChrome from "@/app/components/PersonaChrome";
 import PersonaFooter from "@/app/components/PersonaFooter";
 import ScreenshotFrame from "@/app/components/ScreenshotFrame";
-import { getDevProjects, getCollaborations } from "@/lib/data";
+import { getDevProjects, getCollaborations, getToolkitItems } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Iyke — Developer",
   description: "Architecting scalable, logic-driven systems.",
 };
 
-// The toolkit is presentational (not content-managed), mirroring code.html.
-const TOOLKIT = [
-  { icon: "code_blocks", name: "TypeScript" },
-  { icon: "api", name: "Next.js" },
-  { icon: "data_object", name: "React" },
-  { icon: "terminal", name: "GitHub" },
-  { icon: "database", name: "PostgreSQL" },
-  { icon: "dns", name: "Docker" },
-];
-
 export default async function DeveloperPage() {
-  const [projects, collaborations] = await Promise.all([
+  const [projects, collaborations, toolkit] = await Promise.all([
     getDevProjects(),
     getCollaborations(),
+    getToolkitItems(),
   ]);
 
   return (
@@ -90,13 +82,13 @@ export default async function DeveloperPage() {
               </h3>
             </header>
             <div className="grid grid-cols-2 gap-4">
-              {TOOLKIT.map((item) => (
+              {toolkit.map((item) => (
                 <div
-                  key={item.name}
+                  key={item.id}
                   className="flex items-center gap-3 border border-[#222222] bg-[#111111] p-3 transition-colors hover:border-terminal-green"
                 >
                   <span className="material-symbols-outlined text-outline">
-                    {item.icon}
+                    {item.icon_key}
                   </span>
                   <span className="text-sm text-[#cccccc]">{item.name}</span>
                 </div>
@@ -123,15 +115,53 @@ export default async function DeveloperPage() {
                   </tr>
                 </thead>
                 <tbody className="text-sm">
-                  {collaborations.map((c) => (
-                    <tr
-                      key={c.id}
-                      className="border-b border-[#222222] transition-colors hover:bg-[#111111]"
-                    >
-                      <td className="py-4 pl-2 font-bold text-white">{c.org}</td>
-                      <td className="py-4 text-dev-muted">{c.role}</td>
-                    </tr>
-                  ))}
+                  {collaborations.map((c) => {
+                    // Logo (real image) or a flat labelled placeholder square.
+                    const logo = c.logo_url ? (
+                      <span className="relative block h-6 w-6 shrink-0 overflow-hidden rounded-sm border border-grid-border bg-[#111111]">
+                        <Image
+                          src={c.logo_url}
+                          alt={`${c.org} logo`}
+                          fill
+                          sizes="24px"
+                          className="object-contain"
+                        />
+                      </span>
+                    ) : (
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-sm border border-grid-border bg-[#111111] text-[10px] font-bold text-outline">
+                        {c.org.charAt(0).toUpperCase()}
+                      </span>
+                    );
+
+                    const orgLabel = c.link_url ? (
+                      <a
+                        href={c.link_url}
+                        className="inline-flex items-center gap-1 font-bold text-white hover:text-terminal-green hover:underline"
+                      >
+                        {c.org}
+                        <span className="material-symbols-outlined text-[14px]">
+                          arrow_outward
+                        </span>
+                      </a>
+                    ) : (
+                      <span className="font-bold text-white">{c.org}</span>
+                    );
+
+                    return (
+                      <tr
+                        key={c.id}
+                        className="border-b border-[#222222] transition-colors hover:bg-[#111111]"
+                      >
+                        <td className="py-4 pl-2">
+                          <span className="flex items-center gap-3">
+                            {logo}
+                            {orgLabel}
+                          </span>
+                        </td>
+                        <td className="py-4 text-dev-muted">{c.role}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

@@ -38,9 +38,24 @@ create table if not exists public.writer_posts (
 );
 
 create table if not exists public.collaborations (
-  id   uuid primary key default gen_random_uuid(),
-  org  text not null,
-  role text not null default ''
+  id         uuid primary key default gen_random_uuid(),
+  org        text not null,
+  role       text not null default '',
+  logo_url   text,
+  link_url   text,
+  sort_order integer not null default 0
+);
+
+-- If the table already existed from an earlier version, add the new columns.
+alter table public.collaborations add column if not exists logo_url   text;
+alter table public.collaborations add column if not exists link_url   text;
+alter table public.collaborations add column if not exists sort_order integer not null default 0;
+
+create table if not exists public.toolkit_items (
+  id         uuid primary key default gen_random_uuid(),
+  name       text not null,
+  icon_key   text not null default 'code',
+  sort_order integer not null default 0
 );
 
 -- ---------------------------------------------------------------------------
@@ -53,6 +68,7 @@ alter table public.dev_projects     enable row level security;
 alter table public.motion_projects  enable row level security;
 alter table public.writer_posts     enable row level security;
 alter table public.collaborations   enable row level security;
+alter table public.toolkit_items    enable row level security;
 
 do $$
 begin
@@ -72,6 +88,10 @@ begin
   if not exists (select 1 from pg_policies where policyname = 'collaborations public read') then
     create policy "collaborations public read" on public.collaborations for select using (true);
   end if;
+  -- toolkit_items
+  if not exists (select 1 from pg_policies where policyname = 'toolkit_items public read') then
+    create policy "toolkit_items public read" on public.toolkit_items for select using (true);
+  end if;
 end$$;
 
 -- ---------------------------------------------------------------------------
@@ -84,9 +104,18 @@ insert into public.dev_projects (title, description, link) values
   ('Log_Parser', 'CLI utility written in Go for distributed log analysis and anomaly detection.', '#')
 on conflict do nothing;
 
-insert into public.collaborations (org, role) values
-  ('Vercel', 'Core Infrastructure Contributor'),
-  ('Stripe', 'Payment Gateway Integration Consultant'),
-  ('Linear', 'Frontend Performance Optimization'),
-  ('Open Source', 'Maintainer of several high-traffic npm packages')
+insert into public.collaborations (org, role, sort_order) values
+  ('Vercel', 'Core Infrastructure Contributor', 0),
+  ('Stripe', 'Payment Gateway Integration Consultant', 1),
+  ('Linear', 'Frontend Performance Optimization', 2),
+  ('Open Source', 'Maintainer of several high-traffic npm packages', 3)
+on conflict do nothing;
+
+insert into public.toolkit_items (name, icon_key, sort_order) values
+  ('TypeScript', 'code_blocks', 0),
+  ('Next.js', 'api', 1),
+  ('React', 'data_object', 2),
+  ('GitHub', 'terminal', 3),
+  ('PostgreSQL', 'database', 4),
+  ('Docker', 'dns', 5)
 on conflict do nothing;

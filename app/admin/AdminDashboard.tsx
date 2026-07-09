@@ -2,10 +2,17 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { DevProject, MotionProject, WriterPost } from "@/lib/types";
+import type {
+  DevProject,
+  MotionProject,
+  WriterPost,
+  Collaboration,
+  ToolkitItem,
+} from "@/lib/types";
+import { TOOLKIT_ICON_KEYS } from "@/lib/icons";
 import ResourceManager, { type ResourceConfig } from "./ResourceManager";
 
-type Tab = "developer" | "motion" | "writer";
+type Tab = "developer" | "motion" | "writer" | "toolkit" | "collaborations";
 
 const DEV_CONFIG: ResourceConfig = {
   key: "developer",
@@ -57,16 +64,58 @@ const WRITER_CONFIG: ResourceConfig = {
   ],
 };
 
+const TOOLKIT_CONFIG: ResourceConfig = {
+  key: "toolkit",
+  endpoint: "/api/admin/toolkit-items",
+  singular: "Toolkit item",
+  primaryField: "name",
+  reorderable: true,
+  iconField: "icon_key",
+  fields: [
+    { name: "name", label: "Name", type: "text", required: true },
+    {
+      name: "icon_key",
+      label: "Icon",
+      type: "select",
+      options: TOOLKIT_ICON_KEYS.map((k) => ({ value: k, label: k })),
+    },
+  ],
+};
+
+const COLLAB_CONFIG: ResourceConfig = {
+  key: "collaborations",
+  endpoint: "/api/admin/collaborations",
+  singular: "Collaboration",
+  primaryField: "org",
+  secondaryField: "role",
+  reorderable: true,
+  logoField: "logo_url",
+  fields: [
+    { name: "org", label: "Organization", type: "text", required: true },
+    { name: "role", label: "Role / Contribution", type: "text" },
+    { name: "logo_url", label: "Logo URL", type: "url" },
+    {
+      name: "link_url",
+      label: "Link URL (optional — e.g. a blog post; makes the org clickable)",
+      type: "url",
+    },
+  ],
+};
+
 export default function AdminDashboard({
   supabaseReady,
   initialDev,
   initialMotion,
   initialWriter,
+  initialToolkit,
+  initialCollaborations,
 }: {
   supabaseReady: boolean;
   initialDev: DevProject[];
   initialMotion: MotionProject[];
   initialWriter: WriterPost[];
+  initialToolkit: ToolkitItem[];
+  initialCollaborations: Collaboration[];
 }) {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("developer");
@@ -80,6 +129,8 @@ export default function AdminDashboard({
     { id: "developer", label: "Developer" },
     { id: "motion", label: "Motion" },
     { id: "writer", label: "Writer / Blog" },
+    { id: "toolkit", label: "Toolkit" },
+    { id: "collaborations", label: "Collaborations" },
   ];
 
   return (
@@ -134,6 +185,15 @@ export default function AdminDashboard({
         )}
         {tab === "writer" && (
           <ResourceManager config={WRITER_CONFIG} initialItems={initialWriter} />
+        )}
+        {tab === "toolkit" && (
+          <ResourceManager config={TOOLKIT_CONFIG} initialItems={initialToolkit} />
+        )}
+        {tab === "collaborations" && (
+          <ResourceManager
+            config={COLLAB_CONFIG}
+            initialItems={initialCollaborations}
+          />
         )}
       </main>
     </div>
