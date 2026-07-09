@@ -1,74 +1,30 @@
-import type { Persona } from "./types";
-
 /**
- * Per-persona class tokens for the shared chrome (dropdown nav + glass pill +
- * hamburger). Kept as explicit static class strings so Tailwind's JIT sees every
- * class at build time (no dynamic concatenation of color names).
+ * Shared chrome styling now uses semantic theme tokens (accent/base/ink/border…)
+ * that resolve per persona × mode via CSS variables, so a single style set works
+ * for every persona. Kept as named exports for the chrome components to consume.
  */
-export interface ChromeTheme {
-  // Hamburger button
-  hamburger: string;
-  // Glassmorphism dropdown panel (opens below the hamburger)
-  dropdownBg: string; // frosted: semi-opaque bg + backdrop blur
-  dropdownBorder: string;
-  dropdownTitle: string;
-  dropdownSubtitle: string;
-  // Dropdown items
-  dropdownItemIdle: string;
-  dropdownItemActive: string;
-  // Bottom glass pill navbar
-  pill: string; // frosted bg + blur + border + subtle shadow/glow
-  pillItemIdle: string;
-  pillItemActive: string;
-}
 
-export const CHROME_THEMES: Record<Persona, ChromeTheme> = {
-  developer: {
-    hamburger:
-      "text-white hover:text-terminal-green bg-[#0d0d0d]/60 backdrop-blur-md border border-white/10",
-    dropdownBg: "bg-[#0d0d0d]/80 backdrop-blur-xl",
-    dropdownBorder: "border border-terminal-green/25",
-    dropdownTitle: "text-white",
-    dropdownSubtitle: "text-outline",
-    dropdownItemIdle:
-      "text-neutral-300 hover:bg-white/5 hover:text-white border-l-2 border-transparent",
-    dropdownItemActive:
-      "bg-terminal-green/10 text-terminal-green font-bold border-l-2 border-terminal-green",
-    pill:
-      "bg-[#1a1a1a]/60 backdrop-blur-xl border border-terminal-green/30 shadow-[0_8px_30px_rgba(0,0,0,0.5)] ring-1 ring-white/5",
-    pillItemIdle: "text-[#999999] hover:text-white",
-    pillItemActive: "bg-terminal-green/15 text-terminal-green",
-  },
-  motion: {
-    hamburger:
-      "text-motion-ink hover:text-motion-blue bg-white/50 backdrop-blur-md border border-black/5",
-    dropdownBg: "bg-white/70 backdrop-blur-xl",
-    dropdownBorder: "border border-motion-blue/20",
-    dropdownTitle: "text-motion-ink",
-    dropdownSubtitle: "text-motion-muted",
-    dropdownItemIdle:
-      "text-motion-muted hover:bg-black/5 hover:text-motion-ink border-l-2 border-transparent",
-    dropdownItemActive:
-      "bg-motion-blue/10 text-motion-blue font-bold border-l-2 border-motion-blue",
-    pill:
-      "bg-white/55 backdrop-blur-xl border border-motion-blue/25 shadow-[0_8px_30px_rgba(0,0,0,0.12)] ring-1 ring-black/5",
-    pillItemIdle: "text-motion-muted hover:text-motion-ink",
-    pillItemActive: "bg-motion-blue/10 text-motion-blue",
-  },
-  writer: {
-    hamburger:
-      "text-writer-ink hover:text-writer-burgundy bg-writer-surface/50 backdrop-blur-md border border-black/5",
-    dropdownBg: "bg-writer-surface/75 backdrop-blur-xl",
-    dropdownBorder: "border border-writer-burgundy/20",
-    dropdownTitle: "text-writer-ink",
-    dropdownSubtitle: "text-writer-muted",
-    dropdownItemIdle:
-      "text-writer-muted hover:bg-black/5 hover:text-writer-ink border-l-2 border-transparent",
-    dropdownItemActive:
-      "bg-writer-burgundy/10 text-writer-burgundy font-bold border-l-2 border-writer-burgundy",
-    pill:
-      "bg-writer-surface/60 backdrop-blur-xl border border-writer-burgundy/25 shadow-[0_8px_30px_rgba(0,0,0,0.12)] ring-1 ring-black/5",
-    pillItemIdle: "text-writer-muted hover:text-writer-ink",
-    pillItemActive: "bg-writer-burgundy/10 text-writer-burgundy",
-  },
+// Top-left hamburger: frosted, readable surface tinted by the active accent.
+export const HAMBURGER =
+  "text-ink hover:text-accent bg-surface/90 backdrop-blur-xl border border-border shadow-[0_4px_16px_rgba(0,0,0,0.18)]";
+
+// Glassmorphism dropdown panel (opens below the hamburger). High-opacity frosted
+// surface so the persona list stays clearly readable over any hero content.
+export const DROPDOWN = {
+  panel:
+    "bg-surface/95 backdrop-blur-xl border border-border shadow-[0_12px_40px_rgba(0,0,0,0.28)] ring-1 ring-accent/20",
+  title: "text-ink",
+  subtitle: "text-muted",
+  itemIdle:
+    "text-muted hover:bg-ink/5 hover:text-ink border-l-2 border-transparent",
+  itemActive:
+    "bg-accent/15 text-accent font-semibold border-l-2 border-accent",
+};
+
+// Bottom-center floating glass pill navbar — semi-opaque frosted surface (not
+// see-through), backdrop blur, visible border + soft shadow to lift it.
+export const PILL = {
+  bar: "bg-surface/90 backdrop-blur-xl border border-border shadow-[0_10px_34px_rgba(0,0,0,0.24)] ring-1 ring-accent/20",
+  itemIdle: "text-muted hover:text-ink",
+  itemActive: "bg-accent/15 text-accent",
 };

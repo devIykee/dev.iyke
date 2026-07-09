@@ -14,7 +14,10 @@ export default async function MotionPage() {
   const [feature, ...rest] = projects;
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-motion-bg pb-28 font-sans text-motion-ink">
+    <div
+      data-persona="motion"
+      className="relative min-h-screen overflow-x-hidden bg-base pb-28 font-sans text-ink"
+    >
       <PersonaHeader persona="motion" />
       <PersonaChrome persona="motion" />
 
@@ -23,8 +26,8 @@ export default async function MotionPage() {
         <section id="reel" className="mb-16">
           <SectionLabel>Reel</SectionLabel>
           {feature ? (
-            <div className="border border-motion-border bg-motion-surface">
-              <div className="aspect-video w-full bg-motion-bg">
+            <div className="border border-border bg-surface">
+              <div className="aspect-video w-full bg-base">
                 <iframe
                   className="h-full w-full"
                   src={`https://www.youtube.com/embed/${feature.youtube_id}`}
@@ -34,10 +37,10 @@ export default async function MotionPage() {
                 />
               </div>
               <div className="flex flex-col gap-2 p-6 md:flex-row md:items-center md:justify-between">
-                <h3 className="m-0 text-h3 font-extrabold text-motion-ink">
+                <h3 className="m-0 text-h3 font-extrabold text-ink">
                   {feature.title}
                 </h3>
-                <p className="m-0 max-w-xl text-sm text-motion-muted">
+                <p className="m-0 max-w-xl text-sm text-muted">
                   {feature.description}
                 </p>
               </div>
@@ -55,9 +58,9 @@ export default async function MotionPage() {
               {rest.map((p) => (
                 <article
                   key={p.id}
-                  className="flex flex-col border border-motion-border bg-motion-surface"
+                  className="flex flex-col border border-border bg-surface"
                 >
-                  <div className="aspect-video w-full bg-motion-bg">
+                  <div className="aspect-video w-full bg-base">
                     <iframe
                       className="h-full w-full"
                       src={`https://www.youtube.com/embed/${p.youtube_id}`}
@@ -67,10 +70,10 @@ export default async function MotionPage() {
                     />
                   </div>
                   <div className="flex flex-1 flex-col p-5">
-                    <h4 className="mb-2 text-lg font-extrabold text-motion-ink">
+                    <h4 className="mb-2 text-lg font-extrabold text-ink">
                       {p.title}
                     </h4>
-                    <p className="line-clamp-3 text-sm text-motion-muted">
+                    <p className="line-clamp-3 text-sm text-muted">
                       {p.description}
                     </p>
                   </div>
@@ -90,11 +93,9 @@ export default async function MotionPage() {
               (label) => (
                 <div
                   key={label}
-                  className="flex aspect-square items-center justify-center border border-motion-border bg-motion-surface"
+                  className="flex aspect-square items-center justify-center border border-border bg-surface"
                 >
-                  <span className="font-label text-label uppercase text-motion-muted">
-                    {label}
-                  </span>
+                  <span className="text-label uppercase text-muted">{label}</span>
                 </div>
               )
             )}
@@ -104,14 +105,14 @@ export default async function MotionPage() {
         {/* CONTACT */}
         <section id="contact" className="mb-8">
           <SectionLabel>Contact</SectionLabel>
-          <div className="flex flex-col items-start gap-4 border border-motion-border bg-motion-surface p-8">
-            <p className="max-w-xl text-motion-muted">
+          <div className="flex flex-col items-start gap-4 border border-border bg-surface p-8">
+            <p className="max-w-xl text-muted">
               Have a sequence that needs to move? Let&apos;s talk about your next
               motion project.
             </p>
             <a
               href="mailto:eokorie1911@gmail.com"
-              className="border border-motion-blue bg-motion-blue px-6 py-2 font-label text-label uppercase text-white transition-opacity hover:opacity-90"
+              className="border border-accent bg-accent px-6 py-2 text-label uppercase text-accent-ink transition-opacity hover:opacity-90"
             >
               Start a Project
             </a>
@@ -127,15 +128,15 @@ export default async function MotionPage() {
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <div className="mb-6 flex items-center gap-4">
-      <h3 className="m-0 text-h2 font-black text-motion-ink">{children}</h3>
-      <span className="h-px flex-1 bg-motion-border" />
+      <h3 className="m-0 text-h2 font-black text-ink">{children}</h3>
+      <span className="h-px flex-1 bg-border" />
     </div>
   );
 }
 
 function EmptyNote({ children }: { children: React.ReactNode }) {
   return (
-    <div className="border border-motion-border bg-motion-surface p-8 text-sm text-motion-muted">
+    <div className="border border-border bg-surface p-8 text-sm text-muted">
       {children}
     </div>
   );

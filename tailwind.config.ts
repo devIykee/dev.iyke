@@ -10,13 +10,27 @@ const config: Config = {
   content: [
     "./app/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
+    // Chrome/theme class strings live here — must be scanned or the glass
+    // utilities (bg-surface/90, backdrop-blur-xl, …) never get generated.
+    "./lib/**/*.{ts,tsx}",
   ],
   darkMode: "class",
   theme: {
     extend: {
       colors: {
+        // ---- Semantic theme tokens (resolve to CSS vars per persona × mode) ----
+        // Defined in globals.css; alpha-enabled via the rgb(var / <alpha-value>) form.
+        base: "rgb(var(--c-base) / <alpha-value>)",
+        surface: "rgb(var(--c-surface) / <alpha-value>)",
+        elevated: "rgb(var(--c-elevated) / <alpha-value>)",
+        ink: "rgb(var(--c-ink) / <alpha-value>)",
+        muted: "rgb(var(--c-muted) / <alpha-value>)",
+        border: "rgb(var(--c-border) / <alpha-value>)",
+        "border-soft": "rgb(var(--c-border-soft) / <alpha-value>)",
+        accent: "rgb(var(--c-accent) / <alpha-value>)",
+        "accent-ink": "rgb(var(--c-accent-ink) / <alpha-value>)",
+
         // ---- Shared Material palette (from DESIGN.md frontmatter) ----
-        surface: "#fdf7ff",
         "surface-dim": "#ded8e0",
         "surface-container-lowest": "#ffffff",
         "surface-container-low": "#f8f2fa",
@@ -57,6 +71,8 @@ const config: Config = {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
         serif: ["var(--font-playfair)", "Georgia", "serif"],
         label: ["var(--font-inter)", "system-ui", "sans-serif"],
+        // Shared chrome + admin: one consistent voice across every persona.
+        chrome: ["var(--font-general-sans)", "system-ui", "sans-serif"],
       },
       fontSize: {
         h1: ["32px", { lineHeight: "40px", fontWeight: "900" }],

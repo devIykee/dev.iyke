@@ -38,23 +38,26 @@ export default async function WriterPostPage({
   if (!post) notFound();
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-writer-bg pb-28 font-serif text-writer-ink">
+    <div
+      data-persona="writer"
+      className="relative min-h-screen overflow-x-hidden bg-base pb-28 font-serif text-ink"
+    >
       <PersonaChrome persona="writer" />
 
       <article className="mx-auto max-w-reading px-6 pt-16">
         <Link
           href="/writer"
-          className="font-label text-label uppercase tracking-wider text-writer-burgundy hover:underline"
+          className="text-label uppercase tracking-wider text-accent hover:underline"
         >
           ← Back to articles
         </Link>
 
-        <header className="mt-8 border-b border-writer-rule pb-8">
-          <p className="m-0 mb-3 font-label text-label uppercase tracking-wider text-writer-muted">
+        <header className="mt-8 border-b border-border pb-8">
+          <p className="m-0 mb-3 text-label uppercase tracking-wider text-muted">
             {formatDate(post.date)}
           </p>
           {/* Sentence-case headline, per Writer hierarchy rules */}
-          <h1 className="m-0 font-serif text-4xl font-bold leading-tight text-writer-ink">
+          <h1 className="m-0 font-serif text-4xl font-bold leading-tight text-ink">
             {post.title}
           </h1>
         </header>

@@ -25,7 +25,10 @@ export default async function WriterPage() {
   const posts = await getWriterPosts();
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-writer-bg pb-28 font-serif text-writer-ink">
+    <div
+      data-persona="writer"
+      className="relative min-h-screen overflow-x-hidden bg-base pb-28 font-serif text-ink"
+    >
       <PersonaHeader persona="writer" />
       <PersonaChrome persona="writer" />
 
@@ -33,32 +36,32 @@ export default async function WriterPage() {
       <main className="mx-auto max-w-reading px-6 pt-16">
         {/* ARTICLES */}
         <section id="articles">
-          <h3 className="m-0 mb-8 font-serif text-h2 font-bold text-writer-ink">
+          <h3 className="m-0 mb-8 font-serif text-h2 font-bold text-ink">
             Articles
           </h3>
           <ul className="m-0 list-none p-0">
             {posts.map((post) => (
               <li
                 key={post.id}
-                className="border-t border-writer-rule py-8 first:border-t-0 first:pt-0"
+                className="border-t border-border py-8 first:border-t-0 first:pt-0"
               >
-                <p className="m-0 mb-2 font-label text-label uppercase tracking-wider text-writer-muted">
+                <p className="m-0 mb-2 text-label uppercase tracking-wider text-muted">
                   {formatDate(post.date)}
                 </p>
-                <h4 className="m-0 mb-3 font-serif text-2xl font-bold leading-snug text-writer-ink">
+                <h4 className="m-0 mb-3 font-serif text-2xl font-bold leading-snug text-ink">
                   <Link
                     href={`/writer/${post.slug}`}
-                    className="transition-colors hover:text-writer-burgundy"
+                    className="transition-colors hover:text-accent"
                   >
                     {post.title}
                   </Link>
                 </h4>
-                <p className="m-0 mb-4 text-lg leading-relaxed text-writer-muted">
+                <p className="m-0 mb-4 text-lg leading-relaxed text-muted">
                   {post.excerpt}
                 </p>
                 <Link
                   href={`/writer/${post.slug}`}
-                  className="font-label text-label uppercase tracking-wider text-writer-burgundy hover:underline"
+                  className="text-label uppercase tracking-wider text-accent hover:underline"
                 >
                   Read →
                 </Link>
@@ -67,25 +70,25 @@ export default async function WriterPage() {
           </ul>
         </section>
 
-        <hr className="my-14 border-t border-writer-rule" />
+        <hr className="my-14 border-t border-border" />
 
         {/* CASE STUDIES */}
         <section id="case-studies">
-          <h3 className="m-0 mb-6 font-serif text-h2 font-bold text-writer-ink">
+          <h3 className="m-0 mb-6 font-serif text-h2 font-bold text-ink">
             Case studies
           </h3>
-          <p className="text-lg leading-relaxed text-writer-muted">
+          <p className="text-lg leading-relaxed text-muted">
             Long-form breakdowns of narrative and conversion work — pairing the
             brief, the draft, and the measured result. New studies are added as
             projects wrap.
           </p>
         </section>
 
-        <hr className="my-14 border-t border-writer-rule" />
+        <hr className="my-14 border-t border-border" />
 
         {/* PUBLICATIONS */}
         <section id="publications">
-          <h3 className="m-0 mb-6 font-serif text-h2 font-bold text-writer-ink">
+          <h3 className="m-0 mb-6 font-serif text-h2 font-bold text-ink">
             Publications
           </h3>
           <ul className="m-0 flex list-none flex-col gap-4 p-0">
@@ -96,31 +99,31 @@ export default async function WriterPage() {
             ].map((pub) => (
               <li
                 key={pub.org}
-                className="flex items-baseline justify-between border-b border-writer-rule pb-4"
+                className="flex items-baseline justify-between border-b border-border pb-4"
               >
-                <span className="font-serif text-lg font-bold text-writer-ink">
+                <span className="font-serif text-lg font-bold text-ink">
                   {pub.org}
                 </span>
-                <span className="text-sm text-writer-muted">{pub.role}</span>
+                <span className="text-sm text-muted">{pub.role}</span>
               </li>
             ))}
           </ul>
         </section>
 
-        <hr className="my-14 border-t border-writer-rule" />
+        <hr className="my-14 border-t border-border" />
 
         {/* CONTACT */}
         <section id="contact" className="pb-8">
-          <h3 className="m-0 mb-6 font-serif text-h2 font-bold text-writer-ink">
+          <h3 className="m-0 mb-6 font-serif text-h2 font-bold text-ink">
             Contact
           </h3>
-          <p className="mb-6 text-lg leading-relaxed text-writer-muted">
+          <p className="mb-6 text-lg leading-relaxed text-muted">
             For commissions, editing, or a conversation about a story worth
             telling —
           </p>
           <a
             href="mailto:eokorie1911@gmail.com"
-            className="inline-block border border-writer-burgundy bg-writer-burgundy px-6 py-2 font-label text-label uppercase text-writer-surface transition-opacity hover:opacity-90"
+            className="inline-block border border-accent bg-accent px-6 py-2 text-label uppercase text-accent-ink transition-opacity hover:opacity-90"
           >
             Get in touch
           </a>

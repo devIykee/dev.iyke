@@ -134,7 +134,7 @@ export default function AdminDashboard({
   ];
 
   return (
-    <div className="min-h-screen bg-neutral-950 font-mono text-neutral-100">
+    <div className="min-h-screen bg-neutral-950 font-chrome text-neutral-100">
       <header className="flex items-center justify-between border-b border-neutral-800 px-6 py-4">
         <div>
           <h1 className="m-0 text-lg font-bold tracking-widest">CONTENT ADMIN</h1>

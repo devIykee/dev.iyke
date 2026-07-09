@@ -37,7 +37,7 @@ export default function AdminLogin({ configured }: { configured: boolean }) {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-neutral-950 px-4 font-mono text-neutral-100">
+    <div className="flex min-h-screen items-center justify-center bg-neutral-950 px-4 font-chrome text-neutral-100">
       <div className="w-full max-w-sm border border-neutral-800 p-8">
         <h1 className="m-0 text-lg font-bold tracking-widest">ADMIN ACCESS</h1>
         <p className="mt-1 text-xs text-neutral-500">
