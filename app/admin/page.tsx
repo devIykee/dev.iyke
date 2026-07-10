@@ -13,7 +13,7 @@ import type {
 } from "@/lib/types";
 
 export const metadata: Metadata = {
-  title: "Admin — Iyke",
+  title: "Admin",
   robots: { index: false, follow: false },
 };
 

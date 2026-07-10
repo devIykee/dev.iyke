@@ -11,7 +11,7 @@ import {
   CollaborationRow,
   EmptyRow,
 } from "@/app/components/ContentCards";
-import SocialLinks from "@/app/components/SocialLinks";
+import TerminalContact from "@/app/components/TerminalContact";
 import { getDevProjects, getCollaborations, getToolkitItems } from "@/lib/data";
 import { getHeroImage } from "@/lib/hero";
 
@@ -155,28 +155,7 @@ export default async function DeveloperPage() {
               <div className="h-2 w-2 bg-border" />
               <div className="h-2 w-2 bg-border" />
             </div>
-            <div className="mt-6 whitespace-pre-wrap font-mono text-xs text-accent">
-              {`> SYSTEM BOOT SEQUENCE INITIATED...
-> LOADING KERNEL MODULES... [OK]
-> MOUNTING ROOT FILESYSTEM... [OK]
-> INITIALIZING USER ENVIRONMENT FOR: IYKE
-> CURRENT STATUS: ONLINE AND READY FOR INPUT.
-> CONTACT: `}
-              <a
-                href="mailto:eokorie1911@gmail.com"
-                className="underline hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-              >
-                eokorie1911@gmail.com
-              </a>
-              <span className="animate-pulse"> _</span>
-            </div>
-            {/* Recruiter/technical-audience socials */}
-            <div className="mt-6 flex items-center gap-4 border-t border-border pt-6">
-              <span className="text-xs uppercase tracking-widest text-muted">
-                Find me
-              </span>
-              <SocialLinks items={["github", "linkedin", "x"]} />
-            </div>
+            <TerminalContact />
           </Reveal>
         </div>
       </main>
