@@ -38,7 +38,7 @@ export default async function DeveloperPage() {
           <Reveal
             as="section"
             id="projects"
-            className="col-span-1 flex flex-col gap-6 border border-t-4 border-border border-t-accent p-6 md:col-span-12"
+            className="col-span-1 flex flex-col gap-6 rounded-2xl border border-t-4 border-border border-t-accent p-6 md:col-span-12"
           >
             <header className="flex items-end justify-between border-b border-border pb-4">
               <h3 className="m-0 text-h3 uppercase tracking-widest text-ink">
@@ -52,7 +52,7 @@ export default async function DeveloperPage() {
                     key={p.id}
                     as="article"
                     delay={i * 60}
-                    className="group flex flex-col border border-border transition-transform duration-200 hover:-translate-y-1"
+                    className="group flex flex-col overflow-hidden rounded-xl border border-border transition-transform duration-200 hover:-translate-y-1"
                   >
                     <ScreenshotFrame
                       src={p.screenshot_url}
@@ -93,7 +93,7 @@ export default async function DeveloperPage() {
           <Reveal
             as="section"
             id="toolkit"
-            className="col-span-1 border border-border p-6 md:col-span-5"
+            className="col-span-1 rounded-2xl border border-border p-6 md:col-span-5"
           >
             <header className="mb-6 border-b border-border pb-4">
               <h3 className="m-0 text-h3 uppercase tracking-widest text-ink">
@@ -118,7 +118,7 @@ export default async function DeveloperPage() {
           <Reveal
             as="section"
             id="collaborations"
-            className="col-span-1 flex flex-col border border-border p-6 md:col-span-7"
+            className="col-span-1 flex flex-col rounded-2xl border border-border p-6 md:col-span-7"
           >
             <header className="mb-4 border-b border-border pb-4">
               <h3 className="m-0 text-h3 uppercase tracking-widest text-ink">
@@ -146,7 +146,7 @@ export default async function DeveloperPage() {
           <Reveal
             as="section"
             id="contact"
-            className="relative col-span-1 overflow-hidden border border-border bg-surface p-6 md:col-span-12"
+            className="relative col-span-1 overflow-hidden rounded-2xl border border-border bg-surface p-6 md:col-span-12"
           >
             <div className="absolute left-2 top-2 flex gap-1">
               <div className="h-2 w-2 bg-border" />

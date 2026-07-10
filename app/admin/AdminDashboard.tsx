@@ -153,7 +153,7 @@ export default function AdminDashboard({
         </div>
         <button
           onClick={logout}
-          className="border border-neutral-700 px-4 py-2 text-xs uppercase tracking-wider text-neutral-300 transition-colors hover:border-neutral-400 hover:text-white"
+          className="rounded-lg border border-neutral-700 px-4 py-2 text-xs uppercase tracking-wider text-neutral-300 transition-colors hover:border-neutral-400 hover:text-white"
         >
           Log out
         </button>

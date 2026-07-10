@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
-import { inter, jetbrainsMono, playfair, generalSans } from "./fonts";
+import { appFont } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -62,7 +62,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} ${jetbrainsMono.variable} ${playfair.variable} ${generalSans.variable}`}
+      className={appFont.variable}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: noFlashTheme }} />

@@ -129,7 +129,7 @@ export default async function WriterPage() {
           </p>
           <a
             href="mailto:eokorie1911@gmail.com"
-            className="inline-block border border-accent bg-accent px-6 py-2 text-label uppercase text-accent-ink transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="inline-block rounded-full border border-accent bg-accent px-6 py-2 text-label uppercase text-accent-ink transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           >
             Get in touch
           </a>

@@ -19,15 +19,15 @@ import ThemeToggle from "./ThemeToggle";
  *      · springs slightly on hover
  *
  * Colors come from semantic theme tokens so the chrome follows persona × mode.
- * Labels use General Sans (font-chrome).
+ * Labels use the single app font (font-chrome maps to it).
  */
 export default function PersonaChrome({ persona }: { persona: Persona }) {
   const [open, setOpen] = useState(false);
-  const [hidden, setHidden] = useState(false); // hide-on-scroll-down
+  const [hidden, setHidden] = useState(false); // hidden after idle (past hero)
   const [atTop, setAtTop] = useState(true); // blend-into-hero at very top
   const [active, setActive] = useState(0); // scroll-spy index
   const menuRef = useRef<HTMLDivElement>(null);
-  const lastY = useRef(0);
+  const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const config = PERSONAS[persona];
   const sectionIds = config.sections.map((s) => s.href.replace(/^#/, ""));
 
@@ -49,25 +49,35 @@ export default function PersonaChrome({ persona }: { persona: Persona }) {
     };
   }, []);
 
-  // Scroll handler: hide/reveal + blend-vs-glass.
+  // Scroll handler: reveal the nav on ANY scroll activity once past the hero,
+  // then hide it again after a short idle pause. At the very top it blends into
+  // the hero (and always stays visible). This is direction-agnostic — any scroll
+  // reliably brings it up.
   useEffect(() => {
     function onScroll() {
       const y = window.scrollY;
       const past = y > window.innerHeight * 0.85; // scrolled past the ~100vh hero
       setAtTop(!past);
-      // Only auto-hide once past the hero; keep visible near the top.
+
       if (!past) {
+        // Over the hero: always shown (blended), cancel any pending hide.
+        if (idleTimer.current) clearTimeout(idleTimer.current);
         setHidden(false);
-      } else if (y > lastY.current + 4) {
-        setHidden(true); // scrolling down
-      } else if (y < lastY.current - 4) {
-        setHidden(false); // scrolling up
+        return;
       }
-      lastY.current = y;
+
+      // Past the hero: show on any scroll, then hide after the user stops.
+      setHidden(false);
+      if (idleTimer.current) clearTimeout(idleTimer.current);
+      idleTimer.current = setTimeout(() => setHidden(true), 1600);
     }
+
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (idleTimer.current) clearTimeout(idleTimer.current);
+    };
   }, []);
 
   // Scroll-spy: mark the section currently in view as active.
@@ -176,6 +186,10 @@ export default function PersonaChrome({ persona }: { persona: Persona }) {
           Outer wrapper owns centering + hide/reveal (ease-out, no bounce);
           inner nav owns the hover spring — so the transforms never clobber. */}
       <div
+        onMouseEnter={() => {
+          if (idleTimer.current) clearTimeout(idleTimer.current);
+          setHidden(false);
+        }}
         className={`fixed left-1/2 top-3 z-40 -translate-x-1/2 transition-[opacity,transform] duration-300 ease-out ${
           hidden
             ? "pointer-events-none -translate-y-[150%] opacity-0"

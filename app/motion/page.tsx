@@ -27,7 +27,7 @@ export default async function MotionPage() {
         <Reveal as="section" id="reel" className="mb-16">
           <SectionLabel>Reel</SectionLabel>
           {feature ? (
-            <div className="border border-border bg-surface">
+            <div className="overflow-hidden rounded-2xl border border-border bg-surface">
               <div className="aspect-video w-full bg-base">
                 <iframe
                   className="h-full w-full"
@@ -59,7 +59,7 @@ export default async function MotionPage() {
               {rest.map((p) => (
                 <article
                   key={p.id}
-                  className="flex flex-col border border-border bg-surface transition-transform duration-200 hover:-translate-y-1"
+                  className="flex flex-col overflow-hidden rounded-xl border border-border bg-surface transition-transform duration-200 hover:-translate-y-1"
                 >
                   <div className="aspect-video w-full bg-base">
                     <iframe
@@ -94,7 +94,7 @@ export default async function MotionPage() {
               (label) => (
                 <div
                   key={label}
-                  className="flex aspect-square items-center justify-center border border-border bg-surface"
+                  className="flex aspect-square items-center justify-center rounded-xl border border-border bg-surface"
                 >
                   <span className="text-label uppercase text-muted">{label}</span>
                 </div>
@@ -106,14 +106,14 @@ export default async function MotionPage() {
         {/* CONTACT */}
         <Reveal as="section" id="contact" className="mb-8">
           <SectionLabel>Contact</SectionLabel>
-          <div className="flex flex-col items-start gap-4 border border-border bg-surface p-8">
+          <div className="flex flex-col items-start gap-4 rounded-2xl border border-border bg-surface p-8">
             <p className="max-w-xl text-muted">
               Have a sequence that needs to move? Let&apos;s talk about your next
               motion project.
             </p>
             <a
               href="mailto:eokorie1911@gmail.com"
-              className="border border-accent bg-accent px-6 py-2 text-label uppercase text-accent-ink transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              className="rounded-full border border-accent bg-accent px-6 py-2 text-label uppercase text-accent-ink transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             >
               Start a Project
             </a>
@@ -137,7 +137,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 
 function EmptyNote({ children }: { children: React.ReactNode }) {
   return (
-    <div className="border border-border bg-surface p-8 text-sm text-muted">
+    <div className="rounded-2xl border border-border bg-surface p-8 text-sm text-muted">
       {children}
     </div>
   );

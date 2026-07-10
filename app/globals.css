@@ -2,18 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --font-inter: "Inter", system-ui, sans-serif;
-  --font-jetbrains-mono: "JetBrains Mono", monospace;
-  --font-playfair: "Playfair Display", Georgia, serif;
-  --font-general-sans: "General Sans", system-ui, sans-serif;
-}
-
 html {
   scroll-behavior: smooth;
 }
 
+/* Single font family across the whole site. --font-app is provided by
+   next/font (Switzer now, Azeret later). Everything inherits this. */
 body {
+  font-family: var(--font-app), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -41,8 +37,9 @@ select:focus-visible,
 /* Scroll-reveal: starts hidden+offset, .is-visible fades/slides in. */
 .reveal {
   opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 360ms ease-out, transform 360ms ease-out;
+  transform: translateY(30px);
+  transition: opacity 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: opacity, transform;
 }
 .reveal.is-visible {
@@ -58,6 +55,23 @@ select:focus-visible,
   from {
     opacity: 0;
     transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Hero content entrance — fade + slide up, staggered via inline animation-delay
+   on each element. Runs once on load; clearly perceptible. */
+.hero-in {
+  opacity: 0;
+  animation: heroIn 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes heroIn {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
   }
   to {
     opacity: 1;
@@ -88,6 +102,7 @@ select:focus-visible,
   }
   .reveal,
   .page-enter,
+  .hero-in,
   .img-fade,
   .nav-bounce {
     animation: none !important;
@@ -192,6 +207,51 @@ select:focus-visible,
   scrollbar-width: none;
 }
 
+/* ===========================================================================
+   Subtle background depth — flat linework/texture only (NO gradients, glow, or
+   blur). Each persona gets a low-contrast pattern tinted by its own border/accent
+   token so it reads as depth without fighting the foreground. Applied to the
+   hero via .hero-texture and available site-wide via the persona root.
+   =========================================================================== */
+
+/* Developer: fine technical grid (hairlines) — matches the Bento/terminal feel. */
+[data-persona="developer"] .hero-texture {
+  background-image:
+    linear-gradient(to right, rgb(var(--c-border) / 0.35) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(var(--c-border) / 0.35) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Motion: airy dot grid — clean, gallery-like. */
+[data-persona="motion"] .hero-texture {
+  background-image: radial-gradient(
+    rgb(var(--c-border) / 0.6) 1.2px,
+    transparent 1.2px
+  );
+  background-size: 26px 26px;
+}
+
+/* Writer: faint horizontal manuscript rules. */
+[data-persona="writer"] .hero-texture {
+  background-image: linear-gradient(
+    to bottom,
+    rgb(var(--c-border) / 0.5) 1px,
+    transparent 1px
+  );
+  background-size: 100% 40px;
+}
+
+/* Very subtle grain, persona-agnostic, layered under content for tactile depth.
+   SVG fractal noise at low opacity — flat, no glow. */
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
 /* Writer prose: quiet, legible long-form rhythm. Colors follow the theme tokens. */
 .prose-writer {
   color: rgb(var(--c-ink));
@@ -202,13 +262,13 @@ select:focus-visible,
   font-size: 18px;
 }
 .prose-writer h2 {
-  font-family: var(--font-playfair);
+  font-family: var(--font-app);
   font-size: 26px;
   font-weight: 700;
   margin: 2rem 0 1rem;
 }
 .prose-writer h3 {
-  font-family: var(--font-playfair);
+  font-family: var(--font-app);
   font-size: 21px;
   font-weight: 700;
   margin: 1.75rem 0 0.75rem;
@@ -237,7 +297,7 @@ select:focus-visible,
   list-style: decimal;
 }
 .prose-writer code {
-  font-family: var(--font-jetbrains-mono);
+  font-family: var(--font-app);
   font-size: 0.9em;
   background: rgb(var(--c-surface));
   padding: 0.1em 0.35em;

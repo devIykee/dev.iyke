@@ -177,7 +177,7 @@ export default function ResourceManager({
   }
 
   const inputClass =
-    "w-full border border-neutral-700 bg-black px-3 py-2 text-sm text-neutral-100 outline-none focus:border-neutral-400";
+    "w-full rounded-lg border border-neutral-700 bg-black px-3 py-2 text-sm text-neutral-100 outline-none focus:border-neutral-400";
 
   return (
     <div className="grid gap-8 md:grid-cols-2">
@@ -191,7 +191,7 @@ export default function ResourceManager({
           {items.map((row, index) => (
             <li
               key={row.id}
-              className={`flex items-center justify-between gap-3 border p-3 ${
+              className={`flex items-center justify-between gap-3 rounded-lg border p-3 ${
                 editingId === row.id ? "border-neutral-400" : "border-neutral-800"
               }`}
             >
@@ -271,7 +271,7 @@ export default function ResourceManager({
             </li>
           ))}
           {items.length === 0 && (
-            <li className="border border-dashed border-neutral-800 p-4 text-xs text-neutral-600">
+            <li className="rounded-lg border border-dashed border-neutral-800 p-4 text-xs text-neutral-600">
               Nothing yet. Add your first {config.singular.toLowerCase()} →
             </li>
           )}
@@ -360,7 +360,7 @@ export default function ResourceManager({
           <button
             type="submit"
             disabled={busy}
-            className="border border-neutral-100 bg-neutral-100 px-4 py-2 text-sm font-bold uppercase tracking-wider text-black transition-opacity hover:opacity-90 disabled:opacity-40"
+            className="rounded-lg border border-neutral-100 bg-neutral-100 px-4 py-2 text-sm font-bold uppercase tracking-wider text-black transition-opacity hover:opacity-90 disabled:opacity-40"
           >
             {busy ? "Saving…" : editingId ? "Update" : "Create"}
           </button>
@@ -417,7 +417,7 @@ function ImageField({
           placeholder="https://… or upload →"
           className={inputClass}
         />
-        <label className="shrink-0 cursor-pointer border border-neutral-700 px-3 py-2 text-xs uppercase text-neutral-300 transition-colors hover:border-neutral-400 hover:text-white">
+        <label className="shrink-0 cursor-pointer rounded-lg border border-neutral-700 px-3 py-2 text-xs uppercase text-neutral-300 transition-colors hover:border-neutral-400 hover:text-white">
           {uploading ? "Uploading…" : "Upload"}
           <input
             type="file"

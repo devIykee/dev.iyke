@@ -8,7 +8,7 @@ import type { Collaboration, ToolkitItem } from "@/lib/types";
  */
 export function ToolkitChip({ item }: { item: ToolkitItem }) {
   return (
-    <div className="flex items-center gap-3 border border-border-soft bg-surface px-4 py-3 text-ink transition-colors duration-200 hover:border-accent hover:text-accent">
+    <div className="flex items-center gap-3 rounded-xl border border-border-soft bg-surface px-4 py-3 text-ink transition-colors duration-200 hover:border-accent hover:text-accent">
       <BrandIcon brand={item.icon_key} className="shrink-0" size={22} />
       <span className="truncate text-sm">{item.name}</span>
     </div>
@@ -64,7 +64,7 @@ export function CollaborationRow({ c }: { c: Collaboration }) {
 /** Graceful empty state for content-managed sections. */
 export function EmptyRow({ label }: { label: string }) {
   return (
-    <div className="flex items-center justify-center border border-dashed border-border bg-surface px-6 py-8 text-sm text-muted">
+    <div className="flex items-center justify-center rounded-xl border border-dashed border-border bg-surface px-6 py-8 text-sm text-muted">
       {label}
     </div>
   );

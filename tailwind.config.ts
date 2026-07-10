@@ -67,12 +67,15 @@ const config: Config = {
         "writer-rule": "#ded4c2",
       },
       fontFamily: {
-        mono: ["var(--font-jetbrains-mono)", "monospace"],
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
-        serif: ["var(--font-playfair)", "Georgia", "serif"],
-        label: ["var(--font-inter)", "system-ui", "sans-serif"],
-        // Shared chrome + admin: one consistent voice across every persona.
-        chrome: ["var(--font-general-sans)", "system-ui", "sans-serif"],
+        // ONE font family for the whole site. Every semantic token maps to the
+        // same variable, so any lingering font-mono/serif/sans/chrome/label
+        // utility renders the single app font (Switzer now, Azeret later).
+        app: ["var(--font-app)", "system-ui", "sans-serif"],
+        sans: ["var(--font-app)", "system-ui", "sans-serif"],
+        mono: ["var(--font-app)", "system-ui", "sans-serif"],
+        serif: ["var(--font-app)", "system-ui", "sans-serif"],
+        label: ["var(--font-app)", "system-ui", "sans-serif"],
+        chrome: ["var(--font-app)", "system-ui", "sans-serif"],
       },
       fontSize: {
         h1: ["32px", { lineHeight: "40px", fontWeight: "900" }],

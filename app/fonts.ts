@@ -1,38 +1,40 @@
-import { Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
 import localFont from "next/font/local";
 
-// One font per persona, per DESIGN.md's typographic voices (content areas only).
-export const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "600", "800", "900"],
-  variable: "--font-inter",
-  display: "swap",
-});
+/**
+ * ONE font family for the entire site — every persona, all shared chrome, and
+ * the admin panel. Persona identity comes from color/background/grid tokens,
+ * not typography.
+ *
+ * Active: Acorn (Displaay Type Foundry), supplied in public/fonts/acorn/.
+ * Weights used: Regular 400, Medium 500, SemiBold 600, Bold 700 only.
+ * Thin / ExtraLight / Light are intentionally excluded (too delicate here).
+ *
+ * To swap the family later, point `appFont` at a different localFont() block
+ * exposing the same `--font-app` variable — nothing else in the codebase changes.
+ */
 
-export const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  variable: "--font-jetbrains-mono",
-  display: "swap",
-});
-
-export const playfair = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["400", "700", "900"],
-  variable: "--font-playfair",
-  display: "swap",
-});
-
-// General Sans — the single consistent font for ALL shared chrome (nav, buttons,
-// the constant H1) and the entire /admin panel, across every persona. Self-hosted
-// via next/font/local so there's no slow CDN round-trip.
-export const generalSans = localFont({
-  variable: "--font-general-sans",
+const acorn = localFont({
+  variable: "--font-app",
   display: "swap",
   src: [
-    { path: "./fonts/general-sans/GeneralSans-400.woff2", weight: "400", style: "normal" },
-    { path: "./fonts/general-sans/GeneralSans-500.woff2", weight: "500", style: "normal" },
-    { path: "./fonts/general-sans/GeneralSans-600.woff2", weight: "600", style: "normal" },
-    { path: "./fonts/general-sans/GeneralSans-700.woff2", weight: "700", style: "normal" },
+    { path: "../public/fonts/acorn/Acorn-Regular.woff2", weight: "400", style: "normal" },
+    { path: "../public/fonts/acorn/Acorn-Medium.woff2", weight: "500", style: "normal" },
+    { path: "../public/fonts/acorn/Acorn-SemiBold.woff2", weight: "600", style: "normal" },
+    { path: "../public/fonts/acorn/Acorn-Bold.woff2", weight: "700", style: "normal" },
   ],
 });
+
+// Kept available as a free stand-in (Fontshare) if Acorn ever needs swapping out.
+// const switzer = localFont({
+//   variable: "--font-app",
+//   display: "swap",
+//   src: [
+//     { path: "../public/fonts/switzer/Switzer-400.woff2", weight: "400", style: "normal" },
+//     { path: "../public/fonts/switzer/Switzer-500.woff2", weight: "500", style: "normal" },
+//     { path: "../public/fonts/switzer/Switzer-600.woff2", weight: "600", style: "normal" },
+//     { path: "../public/fonts/switzer/Switzer-700.woff2", weight: "700", style: "normal" },
+//   ],
+// });
+
+// The single active app font.
+export const appFont = acorn;
