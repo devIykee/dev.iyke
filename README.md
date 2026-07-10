@@ -1,4 +1,4 @@
-# Iyke.dev — Multi-Persona Portfolio
+# Iyke.dev Multi-Persona Portfolio
 
 A single site with three distinct visual personas — **Motion**, **Developer**, and
 **Writer** — each with its own color, typography, and layout, plus a passcode-gated
