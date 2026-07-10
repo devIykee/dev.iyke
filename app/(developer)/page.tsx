@@ -31,12 +31,16 @@ export default async function DeveloperPage() {
   return (
     <div
       data-persona="developer"
-      className="page-enter relative min-h-screen overflow-x-hidden bg-base pb-28 font-mono text-ink"
+      className="relative min-h-screen bg-base font-mono text-ink"
     >
-      <PersonaHeader persona="developer" imageSrc={heroImage} />
+      {/* Chrome is a sibling of the animated/clipped content so its fixed nav is
+          truly viewport-fixed (an ancestor transform/overflow would trap it). */}
       <PersonaChrome persona="developer" />
 
-      <main className="mx-auto max-w-bento px-4 pt-16 md:px-margin">
+      <div className="page-enter overflow-x-hidden pb-28">
+        <PersonaHeader persona="developer" imageSrc={heroImage} />
+
+        <main className="mx-auto max-w-bento px-4 pt-16 md:px-margin">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
           {/* PROJECTS — full width, internal 3-col grid */}
           <Reveal
@@ -160,7 +164,8 @@ export default async function DeveloperPage() {
         </div>
       </main>
 
-      <PersonaFooter persona="developer" />
+        <PersonaFooter persona="developer" />
+      </div>
     </div>
   );
 }

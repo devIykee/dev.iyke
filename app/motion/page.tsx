@@ -22,12 +22,14 @@ export default async function MotionPage() {
   return (
     <div
       data-persona="motion"
-      className="page-enter relative min-h-screen overflow-x-hidden bg-base pb-28 font-sans text-ink"
+      className="relative min-h-screen bg-base font-sans text-ink"
     >
-      <PersonaHeader persona="motion" imageSrc={heroImage} />
       <PersonaChrome persona="motion" />
 
-      <main className="mx-auto max-w-bento px-4 pt-16 md:px-margin">
+      <div className="page-enter overflow-x-hidden pb-28">
+        <PersonaHeader persona="motion" imageSrc={heroImage} />
+
+        <main className="mx-auto max-w-bento px-4 pt-16 md:px-margin">
         {/* REEL — the lead feature video, large scale */}
         <Reveal as="section" id="reel" className="mb-16">
           <SectionLabel>Reel</SectionLabel>
@@ -133,7 +135,8 @@ export default async function MotionPage() {
         </Reveal>
       </main>
 
-      <PersonaFooter persona="motion" />
+        <PersonaFooter persona="motion" />
+      </div>
     </div>
   );
 }

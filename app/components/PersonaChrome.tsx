@@ -9,17 +9,19 @@ import ThemeToggle from "./ThemeToggle";
 
 /**
  * Shared navigation chrome for all three public personas:
- *  - a top-RIGHT control cluster: theme toggle (left) + hamburger (right). The
- *    hamburger opens a glassmorphism dropdown persona switcher below it.
- *  - a top-center floating pill navbar of in-page section links that:
- *      · tracks the active section via scroll-spy (and click)
- *      · hides on scroll-down, reveals on scroll-up
- *      · blends into the hero background while at the very top, then turns to
- *        glass once scrolled past the hero
- *      · springs slightly on hover
+ *  - a top-RIGHT control cluster: theme toggle + hamburger. The hamburger opens
+ *    a glassmorphism dropdown persona switcher below it.
+ *  - a floating pill navbar of in-page section links (bottom-center on mobile,
+ *    top-center on desktop) that tracks the active section via scroll-spy and
+ *    hides on scroll-down / reveals on scroll-up.
+ *
+ * IMPORTANT: this component must be rendered OUTSIDE any ancestor that has a CSS
+ * transform (e.g. an entrance animation) or overflow clipping — a transformed
+ * ancestor becomes the containing block for position:fixed children and, with
+ * overflow-hidden, clips them off-screen. The persona pages render it as a
+ * sibling of the animated content for exactly this reason.
  *
  * Colors come from semantic theme tokens so the chrome follows persona × mode.
- * Labels use the single app font (font-chrome maps to it).
  */
 export default function PersonaChrome({ persona }: { persona: Persona }) {
   const [open, setOpen] = useState(false);

@@ -8,7 +8,7 @@ export default function PersonaFooter({ persona: _persona }: { persona: Persona 
         {/* All social icons, icon-only, persona-accent on hover */}
         <SocialLinks className="justify-center" />
         <p className="m-0 text-center text-[10px] uppercase tracking-widest text-muted">
-          2026 © All Rights Reserved — Developed with ❤️ by Iyke
+          2026 © Deviykee. Developed with ❤️ by me.
         </p>
       </div>
     </footer>

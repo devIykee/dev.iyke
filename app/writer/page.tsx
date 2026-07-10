@@ -34,13 +34,15 @@ export default async function WriterPage() {
   return (
     <div
       data-persona="writer"
-      className="page-enter relative min-h-screen overflow-x-hidden bg-base pb-28 font-serif text-ink"
+      className="relative min-h-screen bg-base font-serif text-ink"
     >
-      <PersonaHeader persona="writer" imageSrc={heroImage} />
       <PersonaChrome persona="writer" />
 
-      {/* Single, narrow, centered reading rail — max 720px */}
-      <main className="mx-auto max-w-reading px-6 pt-16">
+      <div className="page-enter overflow-x-hidden pb-28">
+        <PersonaHeader persona="writer" imageSrc={heroImage} />
+
+        {/* Single, narrow, centered reading rail — max 720px */}
+        <main className="mx-auto max-w-reading px-6 pt-16">
         {/* ARTICLES */}
         <Reveal as="section" id="articles">
           <h3 className="m-0 mb-8 font-serif text-h2 font-bold text-ink">
@@ -148,7 +150,8 @@ export default async function WriterPage() {
         </Reveal>
       </main>
 
-      <PersonaFooter persona="writer" />
+        <PersonaFooter persona="writer" />
+      </div>
     </div>
   );
 }
