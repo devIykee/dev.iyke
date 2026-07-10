@@ -5,23 +5,27 @@ import PersonaFooter from "@/app/components/PersonaFooter";
 import ScreenshotFrame from "@/app/components/ScreenshotFrame";
 import Reveal from "@/app/components/Reveal";
 import AutoScrollY from "@/app/components/AutoScrollY";
+import AutoScrollX from "@/app/components/AutoScrollX";
 import {
   ToolkitChip,
   CollaborationRow,
   EmptyRow,
 } from "@/app/components/ContentCards";
+import SocialLinks from "@/app/components/SocialLinks";
 import { getDevProjects, getCollaborations, getToolkitItems } from "@/lib/data";
+import { getHeroImage } from "@/lib/hero";
 
 export const metadata: Metadata = {
-  title: "Iyke — Developer",
+  title: "Developer",
   description: "Architecting scalable, logic-driven systems.",
 };
 
 export default async function DeveloperPage() {
-  const [projects, collaborations, toolkit] = await Promise.all([
+  const [projects, collaborations, toolkit, heroImage] = await Promise.all([
     getDevProjects(),
     getCollaborations(),
     getToolkitItems(),
+    getHeroImage("developer"),
   ]);
 
   return (
@@ -29,7 +33,7 @@ export default async function DeveloperPage() {
       data-persona="developer"
       className="page-enter relative min-h-screen overflow-x-hidden bg-base pb-28 font-mono text-ink"
     >
-      <PersonaHeader persona="developer" />
+      <PersonaHeader persona="developer" imageSrc={heroImage} />
       <PersonaChrome persona="developer" />
 
       <main className="mx-auto max-w-bento px-4 pt-16 md:px-margin">
@@ -88,37 +92,12 @@ export default async function DeveloperPage() {
             )}
           </Reveal>
 
-          {/* TOOLKIT — grid of brand chips; 8 cols. Fixed-height, auto-scrolls
-              vertically only if it overflows. */}
-          <Reveal
-            as="section"
-            id="toolkit"
-            className="col-span-1 rounded-2xl border border-border p-6 md:col-span-5"
-          >
-            <header className="mb-6 border-b border-border pb-4">
-              <h3 className="m-0 text-h3 uppercase tracking-widest text-ink">
-                <span className="mr-2 text-accent">//</span> Toolkit
-              </h3>
-            </header>
-            {toolkit.length > 0 ? (
-              <AutoScrollY heightClass="max-h-[260px]">
-                <div className="grid grid-cols-1 gap-4 pb-4 sm:grid-cols-2">
-                  {toolkit.map((item) => (
-                    <ToolkitChip key={item.id} item={item} />
-                  ))}
-                </div>
-              </AutoScrollY>
-            ) : (
-              <EmptyRow label="No tools listed yet." />
-            )}
-          </Reveal>
-
-          {/* COLLABORATIONS — table/list; 7 cols. Fixed-height, auto-scrolls
-              vertically only if it overflows. */}
+          {/* COLLABORATIONS — full width, ABOVE Toolkit. Vertical list, fixed
+              height, auto-scrolls vertically once items overflow. */}
           <Reveal
             as="section"
             id="collaborations"
-            className="col-span-1 flex flex-col rounded-2xl border border-border p-6 md:col-span-7"
+            className="col-span-1 flex flex-col rounded-2xl border border-border p-6 md:col-span-12"
           >
             <header className="mb-4 border-b border-border pb-4">
               <h3 className="m-0 text-h3 uppercase tracking-widest text-ink">
@@ -131,7 +110,7 @@ export default async function DeveloperPage() {
                   <span>Organization</span>
                   <span>Role / Contribution</span>
                 </div>
-                <AutoScrollY heightClass="max-h-[260px]">
+                <AutoScrollY heightClass="max-h-[280px]">
                   {collaborations.map((c) => (
                     <CollaborationRow key={c.id} c={c} />
                   ))}
@@ -139,6 +118,29 @@ export default async function DeveloperPage() {
               </>
             ) : (
               <EmptyRow label="No collaborations listed yet." />
+            )}
+          </Reveal>
+
+          {/* TOOLKIT — full width, BELOW Collaborations. Single horizontal strip,
+              auto-scrolls horizontally once items overflow. */}
+          <Reveal
+            as="section"
+            id="toolkit"
+            className="col-span-1 rounded-2xl border border-border p-6 md:col-span-12"
+          >
+            <header className="mb-6 border-b border-border pb-4">
+              <h3 className="m-0 text-h3 uppercase tracking-widest text-ink">
+                <span className="mr-2 text-accent">//</span> Toolkit
+              </h3>
+            </header>
+            {toolkit.length > 0 ? (
+              <AutoScrollX>
+                {toolkit.map((item) => (
+                  <ToolkitChip key={item.id} item={item} />
+                ))}
+              </AutoScrollX>
+            ) : (
+              <EmptyRow label="No tools listed yet." />
             )}
           </Reveal>
 
@@ -167,6 +169,13 @@ export default async function DeveloperPage() {
                 eokorie1911@gmail.com
               </a>
               <span className="animate-pulse"> _</span>
+            </div>
+            {/* Recruiter/technical-audience socials */}
+            <div className="mt-6 flex items-center gap-4 border-t border-border pt-6">
+              <span className="text-xs uppercase tracking-widest text-muted">
+                Find me
+              </span>
+              <SocialLinks items={["github", "linkedin", "x"]} />
             </div>
           </Reveal>
         </div>

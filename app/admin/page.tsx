@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { isAuthenticated } from "@/lib/auth";
 import { getServiceClient, isSupabaseConfigured } from "@/lib/supabase";
+import { getAllHeroImages } from "@/lib/hero";
 import AdminLogin from "./AdminLogin";
 import AdminDashboard from "./AdminDashboard";
 import type {
@@ -52,6 +53,8 @@ export default async function AdminPage() {
     collaborations = (c.data as Collaboration[]) ?? [];
   }
 
+  const heroes = await getAllHeroImages();
+
   return (
     <AdminDashboard
       supabaseReady={isSupabaseConfigured() && Boolean(client)}
@@ -60,6 +63,7 @@ export default async function AdminPage() {
       initialWriter={writer}
       initialToolkit={toolkit}
       initialCollaborations={collaborations}
+      initialHeroes={heroes}
     />
   );
 }

@@ -4,11 +4,13 @@ import PersonaHeader from "@/app/components/PersonaHeader";
 import PersonaChrome from "@/app/components/PersonaChrome";
 import PersonaFooter from "@/app/components/PersonaFooter";
 import Reveal from "@/app/components/Reveal";
+import SocialLinks from "@/app/components/SocialLinks";
 import { EmptyRow } from "@/app/components/ContentCards";
 import { getWriterPosts } from "@/lib/data";
+import { getHeroImage } from "@/lib/hero";
 
 export const metadata: Metadata = {
-  title: "Iyke — Writer",
+  title: "Writer",
   description: "Crafting narratives that convert and connect.",
 };
 
@@ -24,14 +26,17 @@ function formatDate(iso: string): string {
 }
 
 export default async function WriterPage() {
-  const posts = await getWriterPosts();
+  const [posts, heroImage] = await Promise.all([
+    getWriterPosts(),
+    getHeroImage("writer"),
+  ]);
 
   return (
     <div
       data-persona="writer"
       className="page-enter relative min-h-screen overflow-x-hidden bg-base pb-28 font-serif text-ink"
     >
-      <PersonaHeader persona="writer" />
+      <PersonaHeader persona="writer" imageSrc={heroImage} />
       <PersonaChrome persona="writer" />
 
       {/* Single, narrow, centered reading rail — max 720px */}
@@ -133,6 +138,13 @@ export default async function WriterPage() {
           >
             Get in touch
           </a>
+          {/* Where to follow the writing/thoughts */}
+          <div className="mt-8 flex items-center gap-4 border-t border-border pt-6">
+            <span className="text-xs uppercase tracking-widest text-muted">
+              Follow
+            </span>
+            <SocialLinks items={["x", "linkedin", "telegram"]} />
+          </div>
         </Reveal>
       </main>
 

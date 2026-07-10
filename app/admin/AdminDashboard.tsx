@@ -8,11 +8,19 @@ import type {
   WriterPost,
   Collaboration,
   ToolkitItem,
+  Persona,
 } from "@/lib/types";
 import { TOOLKIT_ICON_KEYS, TOOLKIT_ICON_LABELS } from "@/lib/icons";
 import ResourceManager, { type ResourceConfig } from "./ResourceManager";
+import HeroManager from "./HeroManager";
 
-type Tab = "developer" | "motion" | "writer" | "toolkit" | "collaborations";
+type Tab =
+  | "developer"
+  | "motion"
+  | "writer"
+  | "toolkit"
+  | "collaborations"
+  | "hero";
 
 const DEV_CONFIG: ResourceConfig = {
   key: "developer",
@@ -118,6 +126,7 @@ export default function AdminDashboard({
   initialWriter,
   initialToolkit,
   initialCollaborations,
+  initialHeroes,
 }: {
   supabaseReady: boolean;
   initialDev: DevProject[];
@@ -125,6 +134,7 @@ export default function AdminDashboard({
   initialWriter: WriterPost[];
   initialToolkit: ToolkitItem[];
   initialCollaborations: Collaboration[];
+  initialHeroes: Record<Persona, string>;
 }) {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("developer");
@@ -140,6 +150,7 @@ export default function AdminDashboard({
     { id: "writer", label: "Writer / Blog" },
     { id: "toolkit", label: "Toolkit" },
     { id: "collaborations", label: "Collaborations" },
+    { id: "hero", label: "Hero Photos" },
   ];
 
   return (
@@ -204,6 +215,7 @@ export default function AdminDashboard({
             initialItems={initialCollaborations}
           />
         )}
+        {tab === "hero" && <HeroManager initial={initialHeroes} />}
       </main>
     </div>
   );

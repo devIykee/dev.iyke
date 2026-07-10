@@ -20,7 +20,13 @@ const PROFILE_SHAPE: Record<Persona, string> = {
  * or glow. The theme toggle and hamburger live in the fixed top-right cluster.
  * Content staggers in on load (.hero-in).
  */
-export default function PersonaHeader({ persona }: { persona: Persona }) {
+export default function PersonaHeader({
+  persona,
+  imageSrc = "/iyke-profile.jpg",
+}: {
+  persona: Persona;
+  imageSrc?: string;
+}) {
   const config = PERSONAS[persona];
 
   return (
@@ -28,11 +34,11 @@ export default function PersonaHeader({ persona }: { persona: Persona }) {
       {/* Flat linework texture layer */}
       <div className="hero-texture pointer-events-none absolute inset-0" aria-hidden="true" />
 
-      <div className="relative mx-auto flex w-full max-w-6xl flex-col items-start justify-center gap-8 sm:flex-row sm:items-center sm:gap-10 lg:gap-16">
-        {/* LEFT: heading, tagline, actions */}
+      <div className="relative mx-auto flex w-full max-w-6xl flex-col items-center gap-8 text-center sm:flex-row sm:items-center sm:justify-center sm:gap-10 sm:text-left lg:gap-16">
+        {/* LEFT: heading, tagline, actions (centered on mobile) */}
         <div className="order-2 max-w-xl sm:order-1 lg:max-w-2xl">
           <h1
-            className="hero-in m-0 text-5xl font-bold leading-[1.05] tracking-tight text-ink sm:text-6xl md:text-7xl"
+            className="hero-in m-0 text-4xl font-bold leading-[1.08] tracking-tight text-ink sm:text-6xl md:text-7xl"
             style={{ animationDelay: "60ms" }}
           >
             Hello, I&apos;m Iyke
@@ -45,7 +51,7 @@ export default function PersonaHeader({ persona }: { persona: Persona }) {
           </h2>
 
           <div
-            className="hero-in mt-9 flex flex-wrap items-center gap-4"
+            className="hero-in mt-9 flex flex-wrap items-center justify-center gap-4 sm:justify-start"
             style={{ animationDelay: "260ms" }}
           >
             <button className="rounded-full border border-accent bg-accent px-8 py-3 text-sm font-semibold uppercase tracking-wide text-accent-ink transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-base">
@@ -63,12 +69,13 @@ export default function PersonaHeader({ persona }: { persona: Persona }) {
           style={{ animationDelay: "120ms" }}
         >
           <AppImage
-            src="/iyke-profile.jpg"
+            src={imageSrc}
             alt="Portrait of Iyke, multi-disciplinary designer and engineer"
             fill
             sizes="(max-width: 640px) 176px, (max-width: 1024px) 256px, 320px"
             className="object-cover"
             priority
+            unoptimized={imageSrc.startsWith("http")}
           />
         </div>
       </div>

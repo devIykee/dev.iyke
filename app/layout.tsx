@@ -9,15 +9,16 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://dev-iyke.vercel.app"
   ),
   title: {
-    default: "Iyke — Motion · Developer · Writer",
+    default: "Iyke:  Developer · Motion · Writer",
     template: "%s · Iyke",
   },
   description:
-    "The multi-disciplinary portfolio of Iyke: motion design, software engineering, and writing.",
+    "The multi-disciplinary portfolio of Iyke: Software engineering, motion design, and writing.",
   applicationName: "Iyke.dev",
   authors: [{ name: "Iyke" }],
   keywords: [
     "Iyke",
+    "deviykee",
     "portfolio",
     "motion design",
     "software engineer",
@@ -30,23 +31,23 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "Iyke.dev",
-    title: "Iyke — Motion · Developer · Writer",
+    title: "Iyke:  Developer · Motion · Writer",
     description:
-      "The multi-disciplinary portfolio of Iyke: motion design, software engineering, and writing.",
+      "The multi-disciplinary portfolio of Iyke: Software engineering, motion design, and writing..",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Iyke — Motion · Developer · Writer",
+        alt: "Iyke:  Developer · Motion · Writer",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Iyke — Motion · Developer · Writer",
+    title: "Iyke:  Developer · Motion · Writer",
     description:
-      "The multi-disciplinary portfolio of Iyke: motion design, software engineering, and writing.",
+      "The multi-disciplinary portfolio of Iyke: Software engineering, motion design, and writing..",
     images: ["/og-image.png"],
   },
 };

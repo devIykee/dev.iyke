@@ -3,12 +3,12 @@ import BrandIcon from "@/lib/BrandIcon";
 import type { Collaboration, ToolkitItem } from "@/lib/types";
 
 /**
- * Toolkit chip — a full-width card cell within the Toolkit grid. Uses a real
- * brand logo (currentColor-tinted so it follows the theme).
+ * Toolkit chip — a fixed-width cell for the horizontal auto-scroll strip. Uses a
+ * real brand logo (currentColor-tinted so it follows the theme).
  */
 export function ToolkitChip({ item }: { item: ToolkitItem }) {
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-border-soft bg-surface px-4 py-3 text-ink transition-colors duration-200 hover:border-accent hover:text-accent">
+    <div className="flex w-44 shrink-0 items-center gap-3 rounded-xl border border-border-soft bg-surface px-4 py-3 text-ink transition-colors duration-200 hover:border-accent hover:text-accent">
       <BrandIcon brand={item.icon_key} className="shrink-0" size={22} />
       <span className="truncate text-sm">{item.name}</span>
     </div>

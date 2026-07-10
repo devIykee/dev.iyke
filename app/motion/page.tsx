@@ -3,15 +3,20 @@ import PersonaHeader from "@/app/components/PersonaHeader";
 import PersonaChrome from "@/app/components/PersonaChrome";
 import PersonaFooter from "@/app/components/PersonaFooter";
 import Reveal from "@/app/components/Reveal";
+import SocialLinks from "@/app/components/SocialLinks";
 import { getMotionProjects } from "@/lib/data";
+import { getHeroImage } from "@/lib/hero";
 
 export const metadata: Metadata = {
-  title: "Iyke — Motion",
+  title: "Motion",
   description: "Bringing interfaces to life through movement.",
 };
 
 export default async function MotionPage() {
-  const projects = await getMotionProjects();
+  const [projects, heroImage] = await Promise.all([
+    getMotionProjects(),
+    getHeroImage("motion"),
+  ]);
   const [feature, ...rest] = projects;
 
   return (
@@ -19,7 +24,7 @@ export default async function MotionPage() {
       data-persona="motion"
       className="page-enter relative min-h-screen overflow-x-hidden bg-base pb-28 font-sans text-ink"
     >
-      <PersonaHeader persona="motion" />
+      <PersonaHeader persona="motion" imageSrc={heroImage} />
       <PersonaChrome persona="motion" />
 
       <main className="mx-auto max-w-bento px-4 pt-16 md:px-margin">
@@ -117,6 +122,13 @@ export default async function MotionPage() {
             >
               Start a Project
             </a>
+            {/* Where the video content lives */}
+            <div className="mt-2 flex items-center gap-4 border-t border-border pt-6">
+              <span className="text-xs uppercase tracking-widest text-muted">
+                Watch
+              </span>
+              <SocialLinks items={["tiktok", "youtube", "instagram"]} />
+            </div>
           </div>
         </Reveal>
       </main>

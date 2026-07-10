@@ -23,11 +23,11 @@ import ThemeToggle from "./ThemeToggle";
  */
 export default function PersonaChrome({ persona }: { persona: Persona }) {
   const [open, setOpen] = useState(false);
-  const [hidden, setHidden] = useState(false); // hidden after idle (past hero)
+  const [hidden, setHidden] = useState(false); // hide-on-scroll-down
   const [atTop, setAtTop] = useState(true); // blend-into-hero at very top
   const [active, setActive] = useState(0); // scroll-spy index
   const menuRef = useRef<HTMLDivElement>(null);
-  const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastY = useRef(0);
   const config = PERSONAS[persona];
   const sectionIds = config.sections.map((s) => s.href.replace(/^#/, ""));
 
@@ -49,10 +49,8 @@ export default function PersonaChrome({ persona }: { persona: Persona }) {
     };
   }, []);
 
-  // Scroll handler: reveal the nav on ANY scroll activity once past the hero,
-  // then hide it again after a short idle pause. At the very top it blends into
-  // the hero (and always stays visible). This is direction-agnostic — any scroll
-  // reliably brings it up.
+  // Standard "smart navbar": hide when scrolling DOWN (reading), reveal when
+  // scrolling UP (wants to navigate). Always visible while over the hero at top.
   useEffect(() => {
     function onScroll() {
       const y = window.scrollY;
@@ -60,24 +58,17 @@ export default function PersonaChrome({ persona }: { persona: Persona }) {
       setAtTop(!past);
 
       if (!past) {
-        // Over the hero: always shown (blended), cancel any pending hide.
-        if (idleTimer.current) clearTimeout(idleTimer.current);
-        setHidden(false);
-        return;
+        setHidden(false); // over the hero → always shown (blended)
+      } else if (y > lastY.current + 6) {
+        setHidden(true); // scrolling down → hide
+      } else if (y < lastY.current - 6) {
+        setHidden(false); // scrolling up → reveal
       }
-
-      // Past the hero: show on any scroll, then hide after the user stops.
-      setHidden(false);
-      if (idleTimer.current) clearTimeout(idleTimer.current);
-      idleTimer.current = setTimeout(() => setHidden(true), 1600);
+      lastY.current = y;
     }
-
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      if (idleTimer.current) clearTimeout(idleTimer.current);
-    };
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   // Scroll-spy: mark the section currently in view as active.
@@ -113,7 +104,9 @@ export default function PersonaChrome({ persona }: { persona: Persona }) {
         ref={menuRef}
         className="fixed right-4 top-4 z-50 flex items-center gap-2 font-chrome md:right-margin"
       >
-        <ThemeToggle className={`rounded-lg ${HAMBURGER}`} />
+        <ThemeToggle
+          className={`h-11 w-11 rounded-xl sm:h-10 sm:w-10 ${HAMBURGER}`}
+        />
 
         <div className="relative">
           <button
@@ -121,7 +114,7 @@ export default function PersonaChrome({ persona }: { persona: Persona }) {
             aria-expanded={open}
             aria-haspopup="menu"
             onClick={() => setOpen((v) => !v)}
-            className={`flex items-center justify-center rounded-lg p-2 text-ink transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${HAMBURGER}`}
+            className={`flex h-11 w-11 items-center justify-center rounded-xl text-ink transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:h-10 sm:w-10 ${HAMBURGER}`}
           >
             <span className="material-symbols-outlined">
               {open ? "close" : "menu"}
@@ -182,23 +175,19 @@ export default function PersonaChrome({ persona }: { persona: Persona }) {
         </div>
       </div>
 
-      {/* Top-center floating pill navbar.
-          Outer wrapper owns centering + hide/reveal (ease-out, no bounce);
-          inner nav owns the hover spring — so the transforms never clobber. */}
+      {/* Section pill: bottom-center on mobile (clears the top-right hamburger),
+          top-center on desktop. Hide slides toward its own edge (down on mobile,
+          up on desktop) so it never crosses the viewport. */}
       <div
-        onMouseEnter={() => {
-          if (idleTimer.current) clearTimeout(idleTimer.current);
-          setHidden(false);
-        }}
-        className={`fixed left-1/2 top-3 z-40 -translate-x-1/2 transition-[opacity,transform] duration-300 ease-out ${
+        className={`fixed left-1/2 z-40 -translate-x-1/2 transition-[opacity,transform] duration-300 ease-out bottom-5 top-auto sm:bottom-auto sm:top-3 ${
           hidden
-            ? "pointer-events-none -translate-y-[150%] opacity-0"
+            ? "pointer-events-none translate-y-[150%] opacity-0 sm:-translate-y-[150%]"
             : "opacity-100"
         }`}
       >
         <nav
           aria-label="Section navigation"
-          className={`nav-bounce flex w-fit max-w-[calc(100vw-11rem)] items-center gap-1 overflow-x-auto rounded-full px-2 py-2 font-chrome no-scrollbar transition-[background-color,box-shadow,border-color] duration-300 sm:max-w-[calc(100vw-16rem)] ${
+          className={`nav-bounce flex w-fit max-w-[calc(100vw-2rem)] items-center gap-1 overflow-x-auto rounded-full px-2 py-1.5 font-chrome no-scrollbar transition-[background-color,box-shadow,border-color] duration-300 sm:max-w-[calc(100vw-16rem)] ${
             atTop ? PILL.blend : PILL.glass
           }`}
         >
@@ -208,11 +197,13 @@ export default function PersonaChrome({ persona }: { persona: Persona }) {
               href={s.href}
               onClick={() => onNavClick(i)}
               aria-current={i === active ? "true" : undefined}
-              className={`shrink-0 rounded-full px-4 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+              className={`flex shrink-0 items-center rounded-full px-3.5 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:px-4 ${
                 i === active ? PILL.itemActive : PILL.itemIdle
               }`}
             >
-              <span className="text-[10px] uppercase tracking-wider">{s.label}</span>
+              <span className="text-[11px] uppercase tracking-wider sm:text-[10px]">
+                {s.label}
+              </span>
             </a>
           ))}
         </nav>
