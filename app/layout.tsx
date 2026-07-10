@@ -5,9 +5,50 @@ import { inter, jetbrainsMono, playfair, generalSans } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Iyke — Motion · Developer · Writer",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://dev-iyke.vercel.app"
+  ),
+  title: {
+    default: "Iyke — Motion · Developer · Writer",
+    template: "%s · Iyke",
+  },
   description:
     "The multi-disciplinary portfolio of Iyke: motion design, software engineering, and writing.",
+  applicationName: "Iyke.dev",
+  authors: [{ name: "Iyke" }],
+  keywords: [
+    "Iyke",
+    "portfolio",
+    "motion design",
+    "software engineer",
+    "writer",
+    "Rust",
+    "Solana",
+    "Next.js",
+  ],
+  manifest: "/manifest.webmanifest",
+  openGraph: {
+    type: "website",
+    siteName: "Iyke.dev",
+    title: "Iyke — Motion · Developer · Writer",
+    description:
+      "The multi-disciplinary portfolio of Iyke: motion design, software engineering, and writing.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Iyke — Motion · Developer · Writer",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Iyke — Motion · Developer · Writer",
+    description:
+      "The multi-disciplinary portfolio of Iyke: motion design, software engineering, and writing.",
+    images: ["/og-image.png"],
+  },
 };
 
 // Runs before first paint to set the persisted (or system) theme, preventing a

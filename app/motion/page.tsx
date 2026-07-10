@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import PersonaHeader from "@/app/components/PersonaHeader";
 import PersonaChrome from "@/app/components/PersonaChrome";
 import PersonaFooter from "@/app/components/PersonaFooter";
+import Reveal from "@/app/components/Reveal";
 import { getMotionProjects } from "@/lib/data";
 
 export const metadata: Metadata = {
@@ -16,14 +17,14 @@ export default async function MotionPage() {
   return (
     <div
       data-persona="motion"
-      className="relative min-h-screen overflow-x-hidden bg-base pb-28 font-sans text-ink"
+      className="page-enter relative min-h-screen overflow-x-hidden bg-base pb-28 font-sans text-ink"
     >
       <PersonaHeader persona="motion" />
       <PersonaChrome persona="motion" />
 
-      <main className="mx-auto max-w-bento px-4 pt-12 md:px-margin">
+      <main className="mx-auto max-w-bento px-4 pt-16 md:px-margin">
         {/* REEL — the lead feature video, large scale */}
-        <section id="reel" className="mb-16">
+        <Reveal as="section" id="reel" className="mb-16">
           <SectionLabel>Reel</SectionLabel>
           {feature ? (
             <div className="border border-border bg-surface">
@@ -48,17 +49,17 @@ export default async function MotionPage() {
           ) : (
             <EmptyNote>No reel yet — add one from the admin dashboard.</EmptyNote>
           )}
-        </section>
+        </Reveal>
 
         {/* CASE STUDIES — 2–3 column grid of embeds */}
-        <section id="case-studies" className="mb-16">
+        <Reveal as="section" id="case-studies" className="mb-16">
           <SectionLabel>Case Studies</SectionLabel>
           {rest.length > 0 ? (
             <div className="grid grid-cols-1 gap-gutter sm:grid-cols-2 lg:grid-cols-3">
               {rest.map((p) => (
                 <article
                   key={p.id}
-                  className="flex flex-col border border-border bg-surface"
+                  className="flex flex-col border border-border bg-surface transition-transform duration-200 hover:-translate-y-1"
                 >
                   <div className="aspect-video w-full bg-base">
                     <iframe
@@ -83,10 +84,10 @@ export default async function MotionPage() {
           ) : (
             <EmptyNote>More case studies coming soon.</EmptyNote>
           )}
-        </section>
+        </Reveal>
 
         {/* BEHIND THE SCENES — flat placeholder tiles (no real assets yet) */}
-        <section id="behind-the-scenes" className="mb-16">
+        <Reveal as="section" id="behind-the-scenes" className="mb-16">
           <SectionLabel>Behind the Scenes</SectionLabel>
           <div className="grid grid-cols-2 gap-gutter md:grid-cols-4">
             {["Storyboards", "Rig Setup", "Color Pass", "Final Render"].map(
@@ -100,10 +101,10 @@ export default async function MotionPage() {
               )
             )}
           </div>
-        </section>
+        </Reveal>
 
         {/* CONTACT */}
-        <section id="contact" className="mb-8">
+        <Reveal as="section" id="contact" className="mb-8">
           <SectionLabel>Contact</SectionLabel>
           <div className="flex flex-col items-start gap-4 border border-border bg-surface p-8">
             <p className="max-w-xl text-muted">
@@ -112,12 +113,12 @@ export default async function MotionPage() {
             </p>
             <a
               href="mailto:eokorie1911@gmail.com"
-              className="border border-accent bg-accent px-6 py-2 text-label uppercase text-accent-ink transition-opacity hover:opacity-90"
+              className="border border-accent bg-accent px-6 py-2 text-label uppercase text-accent-ink transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             >
               Start a Project
             </a>
           </div>
-        </section>
+        </Reveal>
       </main>
 
       <PersonaFooter persona="motion" />

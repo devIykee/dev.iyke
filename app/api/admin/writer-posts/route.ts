@@ -5,6 +5,17 @@ import { revalidatePath } from "next/cache";
 
 const TABLE = "writer_posts";
 
+// Postgres/PostgREST signals for "the status column doesn't exist yet"
+// (migration 002 not applied). We strip status and retry so the writer admin
+// keeps working before the migration is run.
+function isMissingStatusColumn(err: { code?: string; message?: string }): boolean {
+  return (
+    err.code === "42703" ||
+    /column .*status.* does not exist/i.test(err.message ?? "") ||
+    /'status' column/i.test(err.message ?? "")
+  );
+}
+
 export async function GET() {
   const guard = await requireAdmin();
   if ("error" in guard) return guard.error;
@@ -25,22 +36,34 @@ export async function POST(req: Request) {
     date?: string;
     excerpt?: string;
     body?: string;
+    status?: string;
   }>(req);
   if (!body?.title?.trim()) {
     return NextResponse.json({ error: "Title is required." }, { status: 400 });
   }
   const slug = (body.slug?.trim() ? slugify(body.slug) : slugify(body.title)) || "post";
-  const { data, error } = await guard.client
+  const status = body.status === "draft" ? "draft" : "published";
+  const baseRow = {
+    title: body.title.trim(),
+    slug,
+    date: body.date?.trim() || new Date().toISOString().slice(0, 10),
+    excerpt: body.excerpt?.trim() ?? "",
+    body: body.body ?? "",
+  };
+
+  let { data, error } = await guard.client
     .from(TABLE)
-    .insert({
-      title: body.title.trim(),
-      slug,
-      date: body.date?.trim() || new Date().toISOString().slice(0, 10),
-      excerpt: body.excerpt?.trim() ?? "",
-      body: body.body ?? "",
-    })
+    .insert({ ...baseRow, status })
     .select()
     .single();
+  // Retry without status if migration 002 hasn't been applied.
+  if (error && isMissingStatusColumn(error)) {
+    ({ data, error } = await guard.client
+      .from(TABLE)
+      .insert(baseRow)
+      .select()
+      .single());
+  }
   if (error) {
     const msg =
       error.code === "23505"
@@ -63,23 +86,35 @@ export async function PUT(req: Request) {
     date?: string;
     excerpt?: string;
     body?: string;
+    status?: string;
   }>(req);
   if (!body?.id) {
     return NextResponse.json({ error: "id is required." }, { status: 400 });
   }
   const slug = body.slug?.trim() ? slugify(body.slug) : undefined;
-  const { data, error } = await guard.client
+  const status = body.status === "draft" ? "draft" : "published";
+  const baseRow = {
+    title: body.title?.trim(),
+    ...(slug ? { slug } : {}),
+    date: body.date?.trim(),
+    excerpt: body.excerpt?.trim() ?? "",
+    body: body.body ?? "",
+  };
+
+  let { data, error } = await guard.client
     .from(TABLE)
-    .update({
-      title: body.title?.trim(),
-      ...(slug ? { slug } : {}),
-      date: body.date?.trim(),
-      excerpt: body.excerpt?.trim() ?? "",
-      body: body.body ?? "",
-    })
+    .update({ ...baseRow, status })
     .eq("id", body.id)
     .select()
     .single();
+  if (error && isMissingStatusColumn(error)) {
+    ({ data, error } = await guard.client
+      .from(TABLE)
+      .update(baseRow)
+      .eq("id", body.id)
+      .select()
+      .single());
+  }
   if (error) {
     const msg =
       error.code === "23505"

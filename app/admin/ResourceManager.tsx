@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import BrandIcon from "@/lib/BrandIcon";
 
 export type FieldType =
   | "text"
@@ -9,7 +10,8 @@ export type FieldType =
   | "url"
   | "date"
   | "markdown"
-  | "select";
+  | "select"
+  | "image";
 
 export interface SelectOption {
   value: string;
@@ -220,9 +222,11 @@ export default function ResourceManager({
                 )}
 
                 {config.iconField && (
-                  <span className="material-symbols-outlined shrink-0 text-neutral-400">
-                    {String(row[config.iconField] ?? "code")}
-                  </span>
+                  <BrandIcon
+                    brand={String(row[config.iconField] ?? "")}
+                    className="shrink-0 text-neutral-300"
+                    size={20}
+                  />
                 )}
                 {config.logoField &&
                   (row[config.logoField] ? (
@@ -316,9 +320,11 @@ export default function ResourceManager({
                 <div className="flex items-center gap-3">
                   {/* Live preview for icon selects */}
                   {config.iconField === f.name && (
-                    <span className="material-symbols-outlined shrink-0 text-neutral-300">
-                      {form[f.name] || "code"}
-                    </span>
+                    <BrandIcon
+                      brand={form[f.name] || ""}
+                      className="shrink-0 text-neutral-200"
+                      size={22}
+                    />
                   )}
                   <select
                     value={form[f.name] ?? ""}
@@ -332,6 +338,12 @@ export default function ResourceManager({
                     ))}
                   </select>
                 </div>
+              ) : f.type === "image" ? (
+                <ImageField
+                  value={form[f.name] ?? ""}
+                  onChange={(v) => setForm({ ...form, [f.name]: v })}
+                  inputClass={inputClass}
+                />
               ) : (
                 <input
                   type={f.type === "date" ? "date" : f.type === "url" ? "url" : "text"}
@@ -354,6 +366,81 @@ export default function ResourceManager({
           </button>
         </form>
       </section>
+    </div>
+  );
+}
+
+/**
+ * URL input paired with a direct file upload (Supabase Storage). Either paste a
+ * URL or upload a file — on success the returned public URL fills the field.
+ * Shows a small live preview when a URL is present.
+ */
+function ImageField({
+  value,
+  onChange,
+  inputClass,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  inputClass: string;
+}) {
+  const [uploading, setUploading] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  async function upload(file: File) {
+    setErr(null);
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setErr(data.error ?? "Upload failed.");
+        return;
+      }
+      onChange(data.url);
+    } catch {
+      setErr("Network error during upload.");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        <input
+          type="url"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="https://… or upload →"
+          className={inputClass}
+        />
+        <label className="shrink-0 cursor-pointer border border-neutral-700 px-3 py-2 text-xs uppercase text-neutral-300 transition-colors hover:border-neutral-400 hover:text-white">
+          {uploading ? "Uploading…" : "Upload"}
+          <input
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/svg+xml,image/gif"
+            className="hidden"
+            disabled={uploading}
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) upload(f);
+              e.target.value = "";
+            }}
+          />
+        </label>
+      </div>
+      {err && <p className="m-0 text-xs text-red-400">{err}</p>}
+      {value && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={value}
+          alt="preview"
+          className="h-16 w-16 rounded border border-neutral-700 object-contain"
+        />
+      )}
     </div>
   );
 }

@@ -4,8 +4,29 @@ import {
   createSessionToken,
   sessionCookieOptions,
 } from "@/lib/auth";
+import {
+  checkRateLimit,
+  registerFailure,
+  clearRateLimit,
+  clientIp,
+} from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
+  const ip = clientIp(req);
+
+  // Rate-limit gate: lock out repeated failures before doing any work.
+  const gate = checkRateLimit(ip);
+  if (!gate.allowed) {
+    return NextResponse.json(
+      {
+        error: `Too many attempts. Try again in ${Math.ceil(
+          (gate.retryAfterSec ?? 0) / 60
+        )} minute(s).`,
+      },
+      { status: 429, headers: { "Retry-After": String(gate.retryAfterSec ?? 900) } }
+    );
+  }
+
   let passcode = "";
   try {
     const body = await req.json();
@@ -22,7 +43,11 @@ export async function POST(req: Request) {
   }
 
   if (!isValidPasscode(passcode)) {
-    return NextResponse.json({ error: "Incorrect passcode." }, { status: 401 });
+    const after = registerFailure(ip);
+    const msg = after.allowed
+      ? `Incorrect passcode. ${after.remaining} attempt(s) remaining.`
+      : "Too many attempts. Locked out for 15 minutes.";
+    return NextResponse.json({ error: msg }, { status: after.allowed ? 401 : 429 });
   }
 
   const token = await createSessionToken();
@@ -33,6 +58,7 @@ export async function POST(req: Request) {
     );
   }
 
+  clearRateLimit(ip); // success resets the counter
   const res = NextResponse.json({ ok: true });
   res.cookies.set({ ...sessionCookieOptions, value: token });
   return res;

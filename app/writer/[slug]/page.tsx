@@ -5,7 +5,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import PersonaChrome from "@/app/components/PersonaChrome";
 import PersonaFooter from "@/app/components/PersonaFooter";
-import { getWriterPostBySlug, getWriterPosts } from "@/lib/data";
+import { getWriterPostBySlug } from "@/lib/data";
 
 function formatDate(iso: string): string {
   const d = new Date(iso + "T00:00:00Z");
@@ -17,6 +17,15 @@ function formatDate(iso: string): string {
   });
 }
 
+// Estimated read time at ~220 wpm (min 1), stripping markdown symbols.
+function readingTime(markdown: string): number {
+  const words = markdown
+    .replace(/[#>*_`~\-!\[\]()]/g, " ")
+    .split(/\s+/)
+    .filter(Boolean).length;
+  return Math.max(1, Math.round(words / 220));
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -24,9 +33,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const post = await getWriterPostBySlug(slug);
-  if (!post) return { title: "Iyke — Writer" };
+  if (!post) return { title: "Post not found" };
   return { title: `${post.title} — Iyke`, description: post.excerpt };
 }
+
+// Render per-request so missing/draft posts return a true 404 (not a cached
+// 200) and newly-published posts appear immediately. The blog is small and
+// Supabase-backed, so SSR cost is negligible.
+export const dynamic = "force-dynamic";
 
 export default async function WriterPostPage({
   params,
@@ -53,8 +67,10 @@ export default async function WriterPostPage({
         </Link>
 
         <header className="mt-8 border-b border-border pb-8">
-          <p className="m-0 mb-3 text-label uppercase tracking-wider text-muted">
-            {formatDate(post.date)}
+          <p className="m-0 mb-3 flex flex-wrap items-center gap-2 text-label uppercase tracking-wider text-muted">
+            <span>{formatDate(post.date)}</span>
+            <span aria-hidden="true">·</span>
+            <span>{readingTime(post.body)} min read</span>
           </p>
           {/* Sentence-case headline, per Writer hierarchy rules */}
           <h1 className="m-0 font-serif text-4xl font-bold leading-tight text-ink">
@@ -62,7 +78,7 @@ export default async function WriterPostPage({
           </h1>
         </header>
 
-        <div className="prose-writer mt-10">
+        <div className="prose-writer page-enter mt-10">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.body}</ReactMarkdown>
         </div>
       </article>
@@ -70,10 +86,4 @@ export default async function WriterPostPage({
       <PersonaFooter persona="writer" />
     </div>
   );
-}
-
-// Pre-render known slugs at build; unknown slugs fall back to dynamic render.
-export async function generateStaticParams() {
-  const posts = await getWriterPosts();
-  return posts.map((p) => ({ slug: p.slug }));
 }

@@ -9,7 +9,7 @@ import type {
   Collaboration,
   ToolkitItem,
 } from "@/lib/types";
-import { TOOLKIT_ICON_KEYS } from "@/lib/icons";
+import { TOOLKIT_ICON_KEYS, TOOLKIT_ICON_LABELS } from "@/lib/icons";
 import ResourceManager, { type ResourceConfig } from "./ResourceManager";
 
 type Tab = "developer" | "motion" | "writer" | "toolkit" | "collaborations";
@@ -23,7 +23,7 @@ const DEV_CONFIG: ResourceConfig = {
   fields: [
     { name: "title", label: "Title", type: "text", required: true },
     { name: "description", label: "Description", type: "textarea" },
-    { name: "screenshot_url", label: "Screenshot URL", type: "url" },
+    { name: "screenshot_url", label: "Screenshot", type: "image" },
     { name: "link", label: "Project link", type: "url" },
   ],
 };
@@ -45,7 +45,7 @@ const MOTION_CONFIG: ResourceConfig = {
       // The row stores youtube_id; prefill the editable field from it.
       readFrom: "youtube_id",
     },
-    { name: "thumbnail_url", label: "Thumbnail URL (optional)", type: "url" },
+    { name: "thumbnail_url", label: "Thumbnail (optional)", type: "image" },
   ],
 };
 
@@ -59,6 +59,15 @@ const WRITER_CONFIG: ResourceConfig = {
     { name: "title", label: "Title", type: "text", required: true },
     { name: "slug", label: "Slug (optional — auto from title)", type: "text" },
     { name: "date", label: "Date", type: "date" },
+    {
+      name: "status",
+      label: "Status",
+      type: "select",
+      options: [
+        { value: "published", label: "Published (live on /writer)" },
+        { value: "draft", label: "Draft (hidden from public)" },
+      ],
+    },
     { name: "excerpt", label: "Excerpt", type: "textarea" },
     { name: "body", label: "Body (Markdown)", type: "markdown" },
   ],
@@ -77,7 +86,7 @@ const TOOLKIT_CONFIG: ResourceConfig = {
       name: "icon_key",
       label: "Icon",
       type: "select",
-      options: TOOLKIT_ICON_KEYS.map((k) => ({ value: k, label: k })),
+      options: TOOLKIT_ICON_KEYS.map((k) => ({ value: k, label: TOOLKIT_ICON_LABELS[k] })),
     },
   ],
 };
@@ -93,7 +102,7 @@ const COLLAB_CONFIG: ResourceConfig = {
   fields: [
     { name: "org", label: "Organization", type: "text", required: true },
     { name: "role", label: "Role / Contribution", type: "text" },
-    { name: "logo_url", label: "Logo URL", type: "url" },
+    { name: "logo_url", label: "Logo", type: "image" },
     {
       name: "link_url",
       label: "Link URL (optional — e.g. a blog post; makes the org clickable)",

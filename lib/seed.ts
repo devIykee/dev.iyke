@@ -78,12 +78,12 @@ export const seedCollaborations: Collaboration[] = [
 ];
 
 export const seedToolkitItems: ToolkitItem[] = [
-  { id: "seed-tk-1", name: "TypeScript", icon_key: "code_blocks", sort_order: 0 },
-  { id: "seed-tk-2", name: "Next.js", icon_key: "api", sort_order: 1 },
-  { id: "seed-tk-3", name: "React", icon_key: "data_object", sort_order: 2 },
-  { id: "seed-tk-4", name: "GitHub", icon_key: "terminal", sort_order: 3 },
-  { id: "seed-tk-5", name: "PostgreSQL", icon_key: "database", sort_order: 4 },
-  { id: "seed-tk-6", name: "Docker", icon_key: "dns", sort_order: 5 },
+  { id: "seed-tk-1", name: "Rust", icon_key: "rust", sort_order: 0 },
+  { id: "seed-tk-2", name: "Solana", icon_key: "solana", sort_order: 1 },
+  { id: "seed-tk-3", name: "Next.js", icon_key: "nextjs", sort_order: 2 },
+  { id: "seed-tk-4", name: "TypeScript", icon_key: "typescript", sort_order: 3 },
+  // PERN = Postgres, Express, React, Node (React covered here — not listed alone).
+  { id: "seed-tk-5", name: "PERN Stack", icon_key: "pern", sort_order: 4 },
 ];
 
 export const seedMotionProjects: MotionProject[] = [

@@ -26,6 +26,7 @@ export interface WriterPost {
   date: string; // ISO date (YYYY-MM-DD)
   excerpt: string;
   body: string; // markdown
+  status?: "draft" | "published"; // optional until migration 002 is applied
   created_at: string;
 }
 

@@ -39,7 +39,7 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
       onClick={toggle}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       title={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      className={`flex items-center justify-center border border-border p-2 text-ink transition-colors hover:border-accent hover:text-accent ${className}`}
+      className={`flex items-center justify-center p-2 text-ink transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${className}`}
     >
       <span className="material-symbols-outlined text-[20px]">
         {theme === null ? "contrast" : isDark ? "light_mode" : "dark_mode"}

@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import PersonaHeader from "@/app/components/PersonaHeader";
 import PersonaChrome from "@/app/components/PersonaChrome";
 import PersonaFooter from "@/app/components/PersonaFooter";
 import ScreenshotFrame from "@/app/components/ScreenshotFrame";
+import Reveal from "@/app/components/Reveal";
+import AutoScrollY from "@/app/components/AutoScrollY";
+import {
+  ToolkitChip,
+  CollaborationRow,
+  EmptyRow,
+} from "@/app/components/ContentCards";
 import { getDevProjects, getCollaborations, getToolkitItems } from "@/lib/data";
 
 export const metadata: Metadata = {
@@ -21,15 +27,16 @@ export default async function DeveloperPage() {
   return (
     <div
       data-persona="developer"
-      className="relative min-h-screen overflow-x-hidden bg-base pb-28 font-mono text-ink"
+      className="page-enter relative min-h-screen overflow-x-hidden bg-base pb-28 font-mono text-ink"
     >
       <PersonaHeader persona="developer" />
       <PersonaChrome persona="developer" />
 
-      <main className="mx-auto max-w-bento px-4 pt-12 md:px-margin">
+      <main className="mx-auto max-w-bento px-4 pt-16 md:px-margin">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
           {/* PROJECTS — full width, internal 3-col grid */}
-          <section
+          <Reveal
+            as="section"
             id="projects"
             className="col-span-1 flex flex-col gap-6 border border-t-4 border-border border-t-accent p-6 md:col-span-12"
           >
@@ -38,140 +45,106 @@ export default async function DeveloperPage() {
                 <span className="mr-2 text-accent">//</span> Projects
               </h3>
             </header>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              {projects.map((p) => (
-                <article
-                  key={p.id}
-                  className="group flex flex-col border border-border"
-                >
-                  <ScreenshotFrame
-                    src={p.screenshot_url}
-                    label="IMG_PLACEHOLDER"
-                    className="h-48 border-b border-border bg-elevated"
-                    labelClassName="text-muted font-mono tracking-widest"
-                  />
-                  <div className="flex flex-1 flex-col bg-base p-4">
-                    <h4 className="mb-2 text-lg font-bold text-ink transition-colors group-hover:text-accent">
-                      {p.title}
-                    </h4>
-                    <p className="mb-6 line-clamp-2 flex-1 text-sm text-muted">
-                      {p.description}
-                    </p>
-                    <a
-                      href={p.link ?? "#"}
-                      target={p.link && p.link !== "#" ? "_blank" : undefined}
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-2 text-sm font-bold uppercase text-accent hover:underline"
-                    >
-                      Explore
-                      <span className="material-symbols-outlined text-[16px]">
-                        arrow_forward
-                      </span>
-                    </a>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </section>
+            {projects.length > 0 ? (
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                {projects.map((p, i) => (
+                  <Reveal
+                    key={p.id}
+                    as="article"
+                    delay={i * 60}
+                    className="group flex flex-col border border-border transition-transform duration-200 hover:-translate-y-1"
+                  >
+                    <ScreenshotFrame
+                      src={p.screenshot_url}
+                      label="IMG_PLACEHOLDER"
+                      alt={`${p.title} project screenshot`}
+                      className="h-48 border-b border-border bg-elevated"
+                      labelClassName="text-muted font-mono tracking-widest"
+                    />
+                    <div className="flex flex-1 flex-col bg-base p-4">
+                      <h4 className="mb-2 text-lg font-bold text-ink transition-colors group-hover:text-accent">
+                        {p.title}
+                      </h4>
+                      <p className="mb-6 line-clamp-2 flex-1 text-sm text-muted">
+                        {p.description}
+                      </p>
+                      <a
+                        href={p.link ?? "#"}
+                        target={p.link && p.link !== "#" ? "_blank" : undefined}
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 text-sm font-bold uppercase text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                      >
+                        Explore
+                        <span className="material-symbols-outlined text-[16px]">
+                          arrow_forward
+                        </span>
+                      </a>
+                    </div>
+                  </Reveal>
+                ))}
+              </div>
+            ) : (
+              <EmptyRow label="No projects yet — add one from the admin dashboard." />
+            )}
+          </Reveal>
 
-          {/* TOOLKIT — 4 cols */}
-          <section
+          {/* TOOLKIT — grid of brand chips; 8 cols. Fixed-height, auto-scrolls
+              vertically only if it overflows. */}
+          <Reveal
+            as="section"
             id="toolkit"
-            className="col-span-1 border border-border p-6 md:col-span-4"
+            className="col-span-1 border border-border p-6 md:col-span-5"
           >
             <header className="mb-6 border-b border-border pb-4">
               <h3 className="m-0 text-h3 uppercase tracking-widest text-ink">
                 <span className="mr-2 text-accent">//</span> Toolkit
               </h3>
             </header>
-            <div className="grid grid-cols-2 gap-4">
-              {toolkit.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex items-center gap-3 border border-border-soft bg-surface p-3 transition-colors hover:border-accent"
-                >
-                  <span className="material-symbols-outlined text-muted">
-                    {item.icon_key}
-                  </span>
-                  <span className="text-sm text-ink">{item.name}</span>
+            {toolkit.length > 0 ? (
+              <AutoScrollY heightClass="max-h-[260px]">
+                <div className="grid grid-cols-1 gap-4 pb-4 sm:grid-cols-2">
+                  {toolkit.map((item) => (
+                    <ToolkitChip key={item.id} item={item} />
+                  ))}
                 </div>
-              ))}
-            </div>
-          </section>
+              </AutoScrollY>
+            ) : (
+              <EmptyRow label="No tools listed yet." />
+            )}
+          </Reveal>
 
-          {/* COLLABORATIONS — 8 cols */}
-          <section
+          {/* COLLABORATIONS — table/list; 7 cols. Fixed-height, auto-scrolls
+              vertically only if it overflows. */}
+          <Reveal
+            as="section"
             id="collaborations"
-            className="col-span-1 flex flex-col border border-border p-6 md:col-span-8"
+            className="col-span-1 flex flex-col border border-border p-6 md:col-span-7"
           >
-            <header className="mb-6 border-b border-border pb-4">
+            <header className="mb-4 border-b border-border pb-4">
               <h3 className="m-0 text-h3 uppercase tracking-widest text-ink">
                 <span className="mr-2 text-accent">//</span> Collaborations
               </h3>
             </header>
-            <div className="flex-1 overflow-x-auto">
-              <table className="w-full border-collapse text-left">
-                <thead>
-                  <tr className="border-b border-border text-xs uppercase tracking-wider text-muted">
-                    <th className="py-3 font-normal">Organization</th>
-                    <th className="py-3 font-normal">Role / Contribution</th>
-                  </tr>
-                </thead>
-                <tbody className="text-sm">
-                  {collaborations.map((c) => {
-                    // Logo (real image) or a flat labelled placeholder square.
-                    const logo = c.logo_url ? (
-                      <span className="relative block h-6 w-6 shrink-0 overflow-hidden rounded-sm border border-border bg-surface">
-                        <Image
-                          src={c.logo_url}
-                          alt={`${c.org} logo`}
-                          fill
-                          sizes="24px"
-                          className="object-contain"
-                        />
-                      </span>
-                    ) : (
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-sm border border-border bg-surface text-[10px] font-bold text-muted">
-                        {c.org.charAt(0).toUpperCase()}
-                      </span>
-                    );
-
-                    const orgLabel = c.link_url ? (
-                      <a
-                        href={c.link_url}
-                        className="inline-flex items-center gap-1 font-bold text-ink hover:text-accent hover:underline"
-                      >
-                        {c.org}
-                        <span className="material-symbols-outlined text-[14px]">
-                          arrow_outward
-                        </span>
-                      </a>
-                    ) : (
-                      <span className="font-bold text-ink">{c.org}</span>
-                    );
-
-                    return (
-                      <tr
-                        key={c.id}
-                        className="border-b border-border-soft transition-colors hover:bg-surface"
-                      >
-                        <td className="py-4 pl-2">
-                          <span className="flex items-center gap-3">
-                            {logo}
-                            {orgLabel}
-                          </span>
-                        </td>
-                        <td className="py-4 text-muted">{c.role}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </section>
+            {collaborations.length > 0 ? (
+              <>
+                <div className="grid grid-cols-[1fr_1fr] gap-4 border-b border-border pb-2 text-xs uppercase tracking-wider text-muted">
+                  <span>Organization</span>
+                  <span>Role / Contribution</span>
+                </div>
+                <AutoScrollY heightClass="max-h-[260px]">
+                  {collaborations.map((c) => (
+                    <CollaborationRow key={c.id} c={c} />
+                  ))}
+                </AutoScrollY>
+              </>
+            ) : (
+              <EmptyRow label="No collaborations listed yet." />
+            )}
+          </Reveal>
 
           {/* CONTACT / terminal decorative block — full width */}
-          <section
+          <Reveal
+            as="section"
             id="contact"
             className="relative col-span-1 overflow-hidden border border-border bg-surface p-6 md:col-span-12"
           >
@@ -187,12 +160,15 @@ export default async function DeveloperPage() {
 > INITIALIZING USER ENVIRONMENT FOR: IYKE
 > CURRENT STATUS: ONLINE AND READY FOR INPUT.
 > CONTACT: `}
-              <a href="mailto:eokorie1911@gmail.com" className="underline hover:text-ink">
+              <a
+                href="mailto:eokorie1911@gmail.com"
+                className="underline hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              >
                 eokorie1911@gmail.com
               </a>
               <span className="animate-pulse"> _</span>
             </div>
-          </section>
+          </Reveal>
         </div>
       </main>
 

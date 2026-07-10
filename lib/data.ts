@@ -90,7 +90,9 @@ export async function getWriterPosts(): Promise<WriterPost[]> {
     console.error("[data] writer_posts:", error.message);
     return seedWriterPosts;
   }
-  return data as WriterPost[];
+  // Only show published posts. Rows created before migration 002 have no status
+  // column (undefined) → treated as published, so nothing disappears.
+  return (data as WriterPost[]).filter((p) => p.status !== "draft");
 }
 
 export async function getWriterPostBySlug(
@@ -107,5 +109,8 @@ export async function getWriterPostBySlug(
     console.error("[data] writer_post by slug:", error.message);
     return null;
   }
-  return data as WriterPost;
+  const post = data as WriterPost;
+  // Don't expose drafts on the public post route.
+  if (post.status === "draft") return null;
+  return post;
 }

@@ -18,6 +18,86 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* Accessibility: guarantee a visible keyboard focus ring on every interactive
+   element, even where a component didn't set one explicitly. Mouse clicks don't
+   trigger :focus-visible, so this only shows for keyboard users. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid rgb(var(--c-accent, 0 71 255));
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ===========================================================================
+   Motion primitives. Quick (<400ms), flat easing — no elastic/bounce anywhere
+   EXCEPT the navbar hover spring (.nav-bounce). All disabled under
+   prefers-reduced-motion.
+   =========================================================================== */
+
+/* Scroll-reveal: starts hidden+offset, .is-visible fades/slides in. */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 360ms ease-out, transform 360ms ease-out;
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Page-shell mount fade (persona switch + first paint). */
+.page-enter {
+  animation: pageFade 320ms ease-out both;
+}
+@keyframes pageFade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Image load fade-in (paired with AppImage). */
+.img-fade {
+  opacity: 0;
+  transition: opacity 500ms ease-out;
+}
+.img-fade.img-loaded {
+  opacity: 1;
+}
+
+/* Navbar hover spring — the single intentional bounce. */
+.nav-bounce {
+  transition: transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.nav-bounce:hover {
+  transform: translateY(-2px) scale(1.04);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal,
+  .page-enter,
+  .img-fade,
+  .nav-bounce {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+
 /* ===========================================================================
    Semantic theme tokens — persona × mode (6 combos).
    Values are space-separated RGB channels so Tailwind can apply alpha, e.g.

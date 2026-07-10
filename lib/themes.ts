@@ -24,7 +24,13 @@ export const DROPDOWN = {
 // Bottom-center floating glass pill navbar — semi-opaque frosted surface (not
 // see-through), backdrop blur, visible border + soft shadow to lift it.
 export const PILL = {
-  bar: "bg-surface/90 backdrop-blur-xl border border-border shadow-[0_10px_34px_rgba(0,0,0,0.24)] ring-1 ring-accent/20",
-  itemIdle: "text-muted hover:text-ink",
-  itemActive: "bg-accent/15 text-accent",
+  // Glass state (after scrolling past the hero).
+  glass:
+    "bg-surface/90 backdrop-blur-xl border border-border shadow-[0_10px_34px_rgba(0,0,0,0.24)] ring-1 ring-accent/20",
+  // Blended state (while over the hero at the very top): reads as part of the
+  // persona/theme background — no border, blur or shadow.
+  blend: "bg-transparent border border-transparent",
+  // Inactive labels: brighter than muted so the pill feels lively.
+  itemIdle: "text-ink/70 font-medium hover:text-ink",
+  itemActive: "bg-accent/15 text-accent font-semibold",
 };

@@ -34,8 +34,12 @@ create table if not exists public.writer_posts (
   date        date not null default current_date,
   excerpt     text not null default '',
   body        text not null default '',
+  status      text not null default 'published' check (status in ('draft', 'published')),
   created_at  timestamptz not null default now()
 );
+
+-- If the table predates draft/publish, add the column (migration 002).
+alter table public.writer_posts add column if not exists status text not null default 'published';
 
 create table if not exists public.collaborations (
   id         uuid primary key default gen_random_uuid(),
@@ -112,10 +116,9 @@ insert into public.collaborations (org, role, sort_order) values
 on conflict do nothing;
 
 insert into public.toolkit_items (name, icon_key, sort_order) values
-  ('TypeScript', 'code_blocks', 0),
-  ('Next.js', 'api', 1),
-  ('React', 'data_object', 2),
-  ('GitHub', 'terminal', 3),
-  ('PostgreSQL', 'database', 4),
-  ('Docker', 'dns', 5)
+  ('Rust', 'rust', 0),
+  ('Solana', 'solana', 1),
+  ('Next.js', 'nextjs', 2),
+  ('TypeScript', 'typescript', 3),
+  ('PERN Stack', 'pern', 4)
 on conflict do nothing;
