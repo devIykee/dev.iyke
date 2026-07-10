@@ -88,7 +88,7 @@ export default async function DeveloperPage() {
                 ))}
               </div>
             ) : (
-              <EmptyRow label="No projects yet — add one from the admin dashboard." />
+              <EmptyRow label="No projects yet." />
             )}
           </Reveal>
 

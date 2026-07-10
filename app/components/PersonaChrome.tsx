@@ -24,7 +24,6 @@ import ThemeToggle from "./ThemeToggle";
 export default function PersonaChrome({ persona }: { persona: Persona }) {
   const [open, setOpen] = useState(false);
   const [hidden, setHidden] = useState(false); // hide-on-scroll-down
-  const [atTop, setAtTop] = useState(true); // blend-into-hero at very top
   const [active, setActive] = useState(0); // scroll-spy index
   const menuRef = useRef<HTMLDivElement>(null);
   const lastY = useRef(0);
@@ -49,16 +48,15 @@ export default function PersonaChrome({ persona }: { persona: Persona }) {
     };
   }, []);
 
-  // Standard "smart navbar": hide when scrolling DOWN (reading), reveal when
-  // scrolling UP (wants to navigate). Always visible while over the hero at top.
+  // Standard "smart navbar": always visible near the top; once scrolled down a
+  // bit, hide on scroll-DOWN and reveal on scroll-UP. Always keeps a readable
+  // frosted background (no transparent state) so it's visible on every viewport.
   useEffect(() => {
     function onScroll() {
       const y = window.scrollY;
-      const past = y > window.innerHeight * 0.85; // scrolled past the ~100vh hero
-      setAtTop(!past);
 
-      if (!past) {
-        setHidden(false); // over the hero → always shown (blended)
+      if (y < 80) {
+        setHidden(false); // near the top → always shown
       } else if (y > lastY.current + 6) {
         setHidden(true); // scrolling down → hide
       } else if (y < lastY.current - 6) {
@@ -187,9 +185,7 @@ export default function PersonaChrome({ persona }: { persona: Persona }) {
       >
         <nav
           aria-label="Section navigation"
-          className={`nav-bounce flex w-fit max-w-[calc(100vw-2rem)] items-center gap-1 overflow-x-auto rounded-full px-2 py-1.5 font-chrome no-scrollbar transition-[background-color,box-shadow,border-color] duration-300 sm:max-w-[calc(100vw-16rem)] ${
-            atTop ? PILL.blend : PILL.glass
-          }`}
+          className={`nav-bounce flex w-fit max-w-[calc(100vw-2rem)] items-center gap-1 overflow-x-auto rounded-full px-2 py-1.5 font-chrome no-scrollbar transition-[box-shadow] duration-300 sm:max-w-[calc(100vw-16rem)] ${PILL.glass}`}
         >
           {config.sections.map((s, i) => (
             <a

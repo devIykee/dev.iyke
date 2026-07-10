@@ -52,7 +52,7 @@ export default async function MotionPage() {
               </div>
             </div>
           ) : (
-            <EmptyNote>No reel yet — add one from the admin dashboard.</EmptyNote>
+            <EmptyNote>No reel yet.</EmptyNote>
           )}
         </Reveal>
 
