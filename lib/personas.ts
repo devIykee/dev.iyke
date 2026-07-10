@@ -3,6 +3,8 @@ import type { Persona } from "./types";
 export interface NavSection {
   label: string;
   href: string; // in-page anchor
+  /** Hidden from the pill navbar on mobile (still shown on desktop). */
+  desktopOnly?: boolean;
 }
 
 export interface PersonaConfig {
@@ -30,7 +32,7 @@ export const PERSONAS: Record<Persona, PersonaConfig> = {
     sections: [
       { label: "Reel", href: "#reel" },
       { label: "Case Studies", href: "#case-studies" },
-      { label: "Behind the Scenes", href: "#behind-the-scenes" },
+      { label: "Behind the Scenes", href: "#behind-the-scenes", desktopOnly: true },
       { label: "Contact", href: "#contact" },
     ],
   },
@@ -42,7 +44,7 @@ export const PERSONAS: Record<Persona, PersonaConfig> = {
     icon: "code",
     sections: [
       { label: "Projects", href: "#projects" },
-      { label: "Toolkit", href: "#toolkit" },
+      { label: "Toolkit", href: "#toolkit", desktopOnly: true },
       { label: "Collaborations", href: "#collaborations" },
       { label: "Contact", href: "#contact" },
     ],
@@ -56,7 +58,7 @@ export const PERSONAS: Record<Persona, PersonaConfig> = {
     sections: [
       { label: "Articles", href: "#articles" },
       { label: "Case Studies", href: "#case-studies" },
-      { label: "Publications", href: "#publications" },
+      { label: "Publications", href: "#publications", desktopOnly: true },
       { label: "Contact", href: "#contact" },
     ],
   },

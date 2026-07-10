@@ -195,7 +195,9 @@ export default function PersonaChrome({ persona }: { persona: Persona }) {
               href={s.href}
               onClick={() => onNavClick(i)}
               aria-current={i === active ? "true" : undefined}
-              className={`flex shrink-0 items-center rounded-full px-3.5 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:px-4 ${
+              className={`${
+                s.desktopOnly ? "hidden sm:flex" : "flex"
+              } shrink-0 items-center rounded-full px-3.5 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:px-4 ${
                 i === active ? PILL.itemActive : PILL.itemIdle
               }`}
             >
