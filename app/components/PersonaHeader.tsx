@@ -54,12 +54,20 @@ export default function PersonaHeader({
             className="hero-in mt-9 flex flex-wrap items-center justify-center gap-4 sm:justify-start"
             style={{ animationDelay: "260ms" }}
           >
-            <button className="rounded-full border border-accent bg-accent px-8 py-3 text-sm font-semibold uppercase tracking-wide text-accent-ink transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-base">
+            <a
+              href="mailto:eokorie1911@gmail.com"
+              className="rounded-full border border-accent bg-accent px-8 py-3 text-sm font-semibold uppercase tracking-wide text-accent-ink transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-base"
+            >
               Hire Me
-            </button>
-            <button className="rounded-full border border-accent px-8 py-3 text-sm font-semibold uppercase tracking-wide text-accent transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent hover:text-accent-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-base">
+            </a>
+            <a
+              href="/resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full border border-accent px-8 py-3 text-sm font-semibold uppercase tracking-wide text-accent transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent hover:text-accent-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-base"
+            >
               Resume
-            </button>
+            </a>
           </div>
         </div>
 

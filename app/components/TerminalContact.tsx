@@ -68,22 +68,6 @@ export default function TerminalContact() {
         </button>
       </div>
 
-      {/* Socials as terminal command flags */}
-      <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1">
-        <span>{"> SOCIAL: "}</span>
-        {FLAGS.map((f) => (
-          <a
-            key={f.key}
-            href={f.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-ink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-          >
-            --{f.key}
-          </a>
-        ))}
-      </div>
-
       {/* Echoed resume link */}
       <div className="mt-1 flex flex-wrap items-center gap-2">
         <span>{"> RESUME: "}</span>
