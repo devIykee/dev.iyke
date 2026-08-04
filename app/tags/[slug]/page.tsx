@@ -67,8 +67,8 @@ export default async function TagShowcasePage({
   /**
    * A showcase is populated from two sources, in this order:
    *
-   *  1. `showcase.project_ids` — optional manual pins, kept in the given order.
-   *  2. auto-discovery — anything whose own `tags` array contains this slug.
+   *  1. `showcase.project_ids`, optional manual pins kept in the given order.
+   *  2. auto-discovery: anything whose own `tags` array contains this slug.
    *
    * Auto-discovery is the default path: tag a project and it shows up here with
    * no curation step. Pinning only exists to force a few items to the front.
@@ -135,7 +135,7 @@ export default async function TagShowcasePage({
             </p>
 
             {/* Optional showcase-specific résumé. Data-driven via
-                tag_showcases.resume_url, so it appears on this tag only — the
+                tag_showcases.resume_url, so it appears on this tag only. The
                 site-wide Resume button still points at the general resume.pdf. */}
             {showcase?.resume_url && (
               <a
@@ -197,10 +197,10 @@ export default async function TagShowcasePage({
           ) : (
             <div className="flex items-center justify-center rounded-2xl border border-dashed border-border bg-surface px-6 py-14 text-center text-sm text-muted">
               Nothing tagged <span className="mx-1 font-semibold text-ink">{label}</span>{" "}
-              yet — tag items with{" "}
-              <code className="mx-1 text-ink">{slug}</code> in{" "}
+              yet. Add <code className="mx-1 text-ink">{slug}</code> to an
+              item&apos;s tags in{" "}
               <span className="mx-1 font-semibold text-ink">/admin</span>, or pin
-              them from <span className="mx-1 font-semibold text-ink">Tags</span>.
+              it from <span className="mx-1 font-semibold text-ink">Tags</span>.
             </div>
           )}
         </main>

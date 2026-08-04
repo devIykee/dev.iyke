@@ -11,6 +11,8 @@ export interface DevProject {
   tags?: string[];
   // Pinned to the homepage's Featured Projects row.
   featured?: boolean;
+  // Finding severity, used to group cards on /security-research.
+  severity?: string | null;
   created_at: string;
 }
 

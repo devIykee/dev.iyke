@@ -428,8 +428,8 @@ export default function TagsManager({
                 className={inputClass}
               />
               <span className="text-xs text-neutral-500">
-                Shown as a button on this showcase only. Leave empty on tags that
-                should just use the site-wide Resume button.
+                Shows a button on this tag only. Leave it empty to use the
+                site-wide Resume button.
               </span>
             </label>
 
@@ -438,9 +438,9 @@ export default function TagsManager({
                 Pinned {selPersona ?? "developer"} items ({selIds.length} selected)
               </span>
               <span className="text-xs text-neutral-500">
-                Optional. Pinned items render first, in list order. Anything
-                tagged <code>{selSlug || "<slug>"}</code> on the item itself is
-                appended automatically — no pinning required.
+                Optional. Pinned items come first, in this order. Anything
+                carrying the <code>{selSlug || "<slug>"}</code> tag shows up on
+                its own, so pinning is only for controlling what leads.
               </span>
               <ul className="m-0 flex max-h-72 list-none flex-col gap-1 overflow-y-auto rounded-lg border border-neutral-800 p-2">
                 {personaItems.length === 0 && (

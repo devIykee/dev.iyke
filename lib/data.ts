@@ -52,12 +52,12 @@ export function isSecurityProject(p: DevProject): boolean {
   return Boolean(p.tags?.includes(SECURITY_TAG));
 }
 
-/** Engineering portfolio only — security research is excluded. */
+/** Engineering portfolio only. Security research is excluded. */
 export async function getEngineeringProjects(): Promise<DevProject[]> {
   return (await getDevProjects()).filter((p) => !isSecurityProject(p));
 }
 
-/** Security research only — the dedicated /security-research portfolio. */
+/** Security research only, for the dedicated /security-research page. */
 export async function getSecurityProjects(): Promise<DevProject[]> {
   return (await getDevProjects()).filter(isSecurityProject);
 }

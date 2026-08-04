@@ -22,11 +22,17 @@ import {
 } from "@/lib/data";
 import { getHeroImage } from "@/lib/hero";
 
-// The homepage shows a short, curated Featured Projects row — not the whole
-// catalogue — so it stays scannable. "Show More" opens the full engineering
+// The homepage shows a short Featured Projects row rather than the whole
+// catalogue, so it stays scannable. "Show More" opens the full engineering
 // archive at /projects. Security research is excluded entirely; it has its own
 // portfolio at /security-research.
 const FEATURED_LIMIT = 3;
+// Content lives in Supabase and these pages prerender at build time. Next keeps
+// the build-time data reads in .next/cache, which Vercel restores between
+// deploys, so a database edit made outside /admin can otherwise stay invisible
+// until the cache is cleared by hand. Revalidating puts a ceiling on that.
+// Admin writes still call revalidatePath for an immediate refresh.
+export const revalidate = 600;
 
 export const metadata: Metadata = {
   title: "Developer",

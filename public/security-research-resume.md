@@ -2,66 +2,77 @@
 
 ## Contact
 
-eokorie1911@gmail.com · Iyke.dev · github.com/devIykee · @deviykee · Remote / Nigeria
+eokorie1911@gmail.com · Iyke.dev · github.com/devIykee · @deviykee · Remote, Nigeria
 
 ## Summary
 
-Independent smart-contract security researcher. 11 vulnerabilities privately disclosed across
-EVM launchpads, CDP/stablecoin engines and reward systems — 7 High severity. One confirmed
-production fix shipped by the vendor with no user funds lost. Verification is fork and
-`eth_call` only, with reproducible Foundry PoCs and honest impact bounds.
+Smart contract security researcher working on EVM protocols, mostly launchpads and CDP engines.
+Eleven bugs reported privately, seven rated High, one with a confirmed vendor fix in production.
+I verify on forks and local Foundry tests, never against live state, and bound severity to what the
+PoC actually shows.
 
-## Technical Skills - Security
+## Technical Skills
 
-- **Languages:** Solidity, Rust, Python, TypeScript, Bash
-- **Security tools:** Foundry (forge/cast/anvil), fork PoC harnesses, Slither, Echidna, Sourcify, Blockscout API, bytecode/selector analysis
-- **Blockchain:** EVM internals (CREATE prediction, nonce/revert semantics, `slot0`), Uniswap V2/V3/V4 core + periphery, bonding curves, LP locking, CDP collateral & liquidation, oracle quorum models, flash-loan manipulation
-- **Methods:** smart-contract auditing, vulnerability research, severity bounding, access-control & DoS review, threat modeling, static/dynamic analysis, reversing unverified bytecode, responsible disclosure
+**Languages** Solidity, Rust, Python, TypeScript, Bash
 
-## Security Research Projects
+**Tooling** Foundry (forge, cast, anvil), Slither, Echidna, Sourcify, Blockscout API,
+bytecode and selector analysis
 
-**Openfair — V3 graduation pool squat (High).** Pre-created pool at an attacker-set price absorbed
-the ~5 ETH community raise; the pad never validated `slot0`. **Disclosed privately — vendor shipped
-v2.0, retroactively protected all earlier launches, zero user funds lost.**
+**Protocols** Uniswap V2/V3/V4 core and periphery, bonding curves, LP locking, CDP collateral and
+liquidation, oracle quorum design, flash loans
 
-**The Index — Flash-loanable distribution snapshot (High).** Payout snapshot read live `balanceOf`
-with no checkpoint or hold period, letting a borrowed position collect a whale's share of every
-cycle. Proven with a Foundry PoC mirroring production logic.
+**EVM** CREATE address prediction, nonce and revert semantics, storage layout, slot0
 
-**Merry Men / PumpClaw — V4 pre-init factory freeze (High).** `initializePool` soft-fails on an
-existing pool; pre-initing the factory's next predicted CREATE address bricked `createToken`
-permanently, since the revert rolls the nonce back. Verified on an Anvil fork.
+## Security Research
 
-**StockDotFun — V4 pre-init graduation freeze (High).** Gas-only, zero-inventory pool squat forced
-`MIGRATION_FAILED`, trapping a launch's full ~4.4 ETH raise with no in-protocol recovery path.
+**Openfair, V3 graduation pool squat (High).**
+Launch seeding ran through `createAndInitializePoolIfNecessary` with no check on the returned price,
+so a stranger could open the pool first and take the raise into it. Reported privately. Openfair
+shipped v2.0 and backfilled protection for launches already live. No funds lost.
 
-**HoodRich / RobinPump — Zero-min V2 migration (High).** Graduation deposited the raise with
-`amountTokenMin`/`amountETHMin` both `0`. Found by differential review — a sibling factory in the
-same codebase already checked `slot0`, and a competitor used 95% mins for the identical call.
+**The Index, flash loanable payout snapshot (High).**
+Distribution weights read live `balanceOf` at a moment anyone could trigger. No checkpoint, no hold
+period. Reproduced with a Foundry test built from the deployed snapshot and distribute logic.
 
-**Also disclosed:** Robinlaunch V3 pool squat and Robinfun pair-pollution freeze (both High);
-xStocks CDP single-reporter oracle trust flaw and unminted borrow-fee debt; HoodCash permanently
-burned reward accrual; SLVR delegate claim redirect (Medium).
+**Merry Men, V4 pre-init bricks the factory (High).**
+`initializePool` returns instead of reverting on an existing pool and the factory ignored that.
+Claiming the next predicted CREATE address made `createToken` fail during settlement, and the revert
+rolls the nonce back so retries hit it again. Confirmed on an Anvil fork.
 
-## Research & Tools
+**StockDotFun, V4 pre-init freezes graduation (High).**
+Taking the pool key costs gas and no inventory. Graduation then reverts for good, curve trading is
+already off, and about 4.4 ETH of raise is stuck with no recovery path in the verified source.
 
-- **Bug-hunt toolkit** — 10-step gate-driven pipeline in Bash/Python: RPC ground-truth gating, creator trace + frontend bundle grep for core discovery, surface mapping (codesize/Sourcify/selectors), unauthenticated `eth_call` auth triage, Foundry fork-PoC scaffolding, report and disclosure generators, selftest harness.
-- **Bughunt playbook** (`iykes-web3-bughunt-skill`) — the audit method the toolkit implements: intake, per-step decision gates, PoC and report templates, "kill your own finding" severity discipline, fork-only rules of engagement.
-- **Ecosystem sweep** — ~30 Robinhood Chain protocols triaged, with negative results held to the same standard as positives.
+**HoodRich, no slippage bounds on V2 migration (High).**
+`addLiquidityETH` ran with both minimums at zero. Found by diffing against the same codebase's meme
+factory, which already checked `slot0`, and a competing pad using 95 percent bounds on the same call.
 
-## Professional Experience
+**Also reported.** Robinlaunch V3 pool squat and Robinfun pair pollution freeze, both High. xStocks
+single reporter oracle and unminted borrow fee debt. HoodCash burned reward accrual. SLVR delegate
+claim redirect.
 
-**Independent Security Researcher** | 2026 - Present
-- 11 findings across launchpads, CDP engines, mining pools and distribution systems; every report states an explicit impact bound and what the finding is *not*.
-- Specialized in AMM pool-initialization attack surface — a bug class recurring across nearly every bonding-curve launchpad audited.
+## Research and Tools
 
-**Freelance Blockchain Developer, CribX** | Aug 2026 - Present
-- Audited and completed a multi-chain deposit system (BTC/ETH/SOL/USDT/USDC) in a NestJS/Prisma/BullMQ backend; hardened the credit path against replay-driven double-crediting within BitGo and Tatum trust boundaries.
+- Bug hunt toolkit, ten scripts covering the repeatable parts of a hunt: chain id gate, creator trace, frontend bundle grep, surface map with Sourcify and selector dump, unauthenticated call triage, Foundry fork scaffold, report and disclosure templates.
+- Audit playbook the toolkit implements: intake, per step gates, PoC and report structure, and the rule that I try to disprove a finding before writing it up.
+- Reviewed roughly 30 Robinhood Chain protocols. Negative results are written up the same way as positive ones.
 
-**Selected secure protocol work** — Covenant, attestation-gated treasury on Stacks (**2nd place, FlowVault
-hackathon**); Skimflow, x402 micropayment settlement with USDC on Arc; Freelance Escrow in Rust/Stylus;
-technical audit of CredChain.
+## Experience
+
+**Independent Security Researcher**, 2026 to present
+
+- Eleven findings across launchpads, CDP engines, mining pools and distribution contracts.
+- Most of the work sits in AMM pool initialisation. The same mistake shows up on nearly every bonding curve launchpad, in three different shapes across V2, V3 and V4.
+
+**Freelance Blockchain Developer, CribX**, Aug 2026 to present
+
+- Audited and finished a multi chain deposit system (BTC, ETH, SOL, USDT, USDC) in a NestJS, Prisma and BullMQ backend.
+- Made deposit crediting idempotent so replayed chain events cannot double credit, working inside existing BitGo custody and Tatum monitoring.
+
+**Other build work.** Covenant, an attestation gated treasury on Stacks, second place in the FlowVault
+hackathon. Skimflow, x402 micropayments settling in USDC on Arc. Freelance Escrow in Rust and Stylus.
+Technical audit of CredChain.
 
 ## Education
 
-**B.Eng. Software Engineering**, Federal University of Technology Owerri — 2023-2028 (in progress)
+B.Eng. Software Engineering, Federal University of Technology Owerri, 2023 to 2028, in progress

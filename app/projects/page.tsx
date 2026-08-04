@@ -13,6 +13,12 @@ export const metadata: Metadata = {
 
 // Engineering only. Security research is a separate portfolio, reachable from
 // the SecRes tag at /security-research.
+// Content lives in Supabase and these pages prerender at build time. Next keeps
+// the build-time data reads in .next/cache, which Vercel restores between
+// deploys, so a database edit made outside /admin can otherwise stay invisible
+// until the cache is cleared by hand. Revalidating puts a ceiling on that.
+// Admin writes still call revalidatePath for an immediate refresh.
+export const revalidate = 600;
 
 export default async function AllProjectsPage() {
   const projects = await getEngineeringProjects();
@@ -44,7 +50,7 @@ export default async function AllProjectsPage() {
             </h1>
             <p className="m-0 text-sm text-muted">
               {projects.length} engineering project
-              {projects.length === 1 ? "" : "s"} · security research lives at{" "}
+              {projects.length === 1 ? "" : "s"}. Security work is at{" "}
               <Link
                 href="/security-research"
                 className="text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"

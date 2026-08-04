@@ -48,7 +48,7 @@ const DEV_CONFIG: ResourceConfig = {
       type: "select",
       options: [
         { value: "false", label: "Not featured" },
-        { value: "true", label: "Featured (max 3 shown on homepage)" },
+        { value: "true", label: "Featured (up to 3 on the homepage)" },
       ],
     },
   ],

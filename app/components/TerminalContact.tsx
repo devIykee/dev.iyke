@@ -9,7 +9,7 @@ const RESUME_HREF = "/resume.pdf";
  * Developer-persona Contact block: email + résumé, nothing else.
  *
  * The decorative boot-sequence backdrop and the trailing blinking-cursor line
- * were removed — the section now ends immediately after the résumé button.
+ * were removed. The section now ends at the résumé button.
  * Click-to-copy email with a "copied" confirmation. No socials here (they live
  * in the footer/nav).
  */
@@ -22,7 +22,7 @@ export default function TerminalContact() {
       setCopied(true);
       setTimeout(() => setCopied(false), 1600);
     } catch {
-      /* clipboard blocked — no-op; the mailto link still works */
+      /* clipboard blocked, no-op; the mailto link still works */
     }
   }
 

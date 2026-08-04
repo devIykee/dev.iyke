@@ -22,7 +22,7 @@ const PDF_FILE = "security-research-resume.pdf";
 export const metadata: Metadata = {
   title: "Security Research Résumé",
   description:
-    "Iyke — independent Web3 / smart-contract security researcher. Findings, tooling, and methodology.",
+    "Security research resume for Iyke. Findings, tooling, and audit experience on EVM protocols.",
 };
 
 async function loadResume(): Promise<string> {
@@ -54,7 +54,7 @@ export default async function SecurityResearchResumePage() {
 
         <header className="mt-8 flex flex-col gap-5 border-b border-border pb-8">
           <h1 className="m-0 text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl">
-            Iyke — Security Research Résumé
+            Security Research Résumé
           </h1>
           <div className="flex flex-wrap items-center gap-3">
             <a
