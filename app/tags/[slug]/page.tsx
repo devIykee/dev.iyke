@@ -39,12 +39,16 @@ export async function generateMetadata({
   };
 }
 
+// Note: /tags/security-research is redirected to the bespoke /security-research
+// portfolio by next.config.ts, so it never reaches this generic showcase.
+
 export default async function TagShowcasePage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+
   const [tags, showcase] = await Promise.all([
     getHeroTagsBySlug(slug),
     getTagShowcase(slug),

@@ -41,6 +41,38 @@ export async function getDevProjects(): Promise<DevProject[]> {
   return data as DevProject[];
 }
 
+/**
+ * The tag that marks a project as security research. Anything carrying it is
+ * kept off the engineering portfolio and lives on /security-research instead,
+ * so the two identities stay cleanly separated.
+ */
+export const SECURITY_TAG = "security-research";
+
+export function isSecurityProject(p: DevProject): boolean {
+  return Boolean(p.tags?.includes(SECURITY_TAG));
+}
+
+/** Engineering portfolio only — security research is excluded. */
+export async function getEngineeringProjects(): Promise<DevProject[]> {
+  return (await getDevProjects()).filter((p) => !isSecurityProject(p));
+}
+
+/** Security research only — the dedicated /security-research portfolio. */
+export async function getSecurityProjects(): Promise<DevProject[]> {
+  return (await getDevProjects()).filter(isSecurityProject);
+}
+
+/**
+ * Featured engineering projects for the homepage, newest first and capped.
+ * Falls back to the most recent engineering projects if nothing is flagged, so
+ * the section is never empty.
+ */
+export async function getFeaturedProjects(limit: number): Promise<DevProject[]> {
+  const all = await getEngineeringProjects();
+  const flagged = all.filter((p) => p.featured);
+  return (flagged.length ? flagged : all).slice(0, limit);
+}
+
 export async function getCollaborations(): Promise<Collaboration[]> {
   const supabase = getAnonClient();
   if (!supabase) return seedCollaborations;

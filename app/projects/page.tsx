@@ -4,15 +4,18 @@ import PersonaChrome from "@/app/components/PersonaChrome";
 import PersonaFooter from "@/app/components/PersonaFooter";
 import Reveal from "@/app/components/Reveal";
 import { DevProjectCard, EmptyRow } from "@/app/components/ContentCards";
-import { getDevProjects } from "@/lib/data";
+import { getEngineeringProjects } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "All Projects",
-  description: "The full list of engineering and security-research projects.",
+  description: "The full engineering portfolio.",
 };
 
+// Engineering only. Security research is a separate portfolio, reachable from
+// the SecRes tag at /security-research.
+
 export default async function AllProjectsPage() {
-  const projects = await getDevProjects();
+  const projects = await getEngineeringProjects();
 
   return (
     <div
@@ -40,7 +43,14 @@ export default async function AllProjectsPage() {
               <span className="mr-2 text-accent">//</span> All Projects
             </h1>
             <p className="m-0 text-sm text-muted">
-              {projects.length} project{projects.length === 1 ? "" : "s"}
+              {projects.length} engineering project
+              {projects.length === 1 ? "" : "s"} · security research lives at{" "}
+              <Link
+                href="/security-research"
+                className="text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              >
+                /security-research
+              </Link>
             </p>
           </div>
 

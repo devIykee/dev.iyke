@@ -42,6 +42,15 @@ const DEV_CONFIG: ResourceConfig = {
       label: "Tags (comma-separated, e.g. security-research)",
       type: "text",
     },
+    {
+      name: "featured",
+      label: "Homepage",
+      type: "select",
+      options: [
+        { value: "false", label: "Not featured" },
+        { value: "true", label: "Featured (max 3 shown on homepage)" },
+      ],
+    },
   ],
 };
 

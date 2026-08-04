@@ -16,8 +16,11 @@ create table if not exists public.dev_projects (
   screenshot_url text,
   link           text,
   -- Free-form tag slugs (migration 004). A project appears on /tags/<slug>
-  -- automatically when this array contains that slug.
+  -- automatically when this array contains that slug. Anything tagged
+  -- 'security-research' is kept off the engineering portfolio.
   tags           text[] not null default '{}',
+  -- Pinned to the homepage's Featured Projects row (migration 005).
+  featured       boolean not null default false,
   created_at     timestamptz not null default now()
 );
 
@@ -50,6 +53,7 @@ alter table public.writer_posts add column if not exists status text not null de
 alter table public.dev_projects    add column if not exists tags text[] not null default '{}';
 alter table public.motion_projects add column if not exists tags text[] not null default '{}';
 alter table public.writer_posts    add column if not exists tags text[] not null default '{}';
+alter table public.dev_projects add column if not exists featured boolean not null default false;
 create index if not exists dev_projects_tags_idx    on public.dev_projects    using gin (tags);
 create index if not exists motion_projects_tags_idx on public.motion_projects using gin (tags);
 create index if not exists writer_posts_tags_idx    on public.writer_posts    using gin (tags);

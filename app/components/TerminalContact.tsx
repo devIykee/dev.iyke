@@ -5,22 +5,13 @@ import { useState } from "react";
 const EMAIL = "eokorie1911@gmail.com";
 const RESUME_HREF = "/resume.pdf";
 
-// Faint boot-sequence flavor text — purely decorative backdrop behind the
-// contact card. No socials here (they live in the footer/nav).
-const BOOT_LINES = `> SYSTEM BOOT SEQUENCE INITIATED...
-> LOADING KERNEL MODULES... [OK]
-> MOUNTING ROOT FILESYSTEM... [OK]
-> INITIALIZING USER ENVIRONMENT FOR: IYKE
-> CURRENT STATUS: ONLINE AND READY FOR INPUT.
-> AVAILABILITY: OPEN TO FREELANCE / FULL-TIME
-> LOCATION: REMOTE (UTC+1)
-> AVG RESPONSE TIME: <24HRS`;
-
 /**
- * Developer-persona Contact block. The contact itself — email + resume — is the
- * dominant, eye-catching element; the terminal boot sequence is demoted to a
- * faint decorative backdrop. Click-to-copy email with a "copied" confirmation,
- * an echoed resume download, and a blinking cursor for the "still running" feel.
+ * Developer-persona Contact block: email + résumé, nothing else.
+ *
+ * The decorative boot-sequence backdrop and the trailing blinking-cursor line
+ * were removed — the section now ends immediately after the résumé button.
+ * Click-to-copy email with a "copied" confirmation. No socials here (they live
+ * in the footer/nav).
  */
 export default function TerminalContact() {
   const [copied, setCopied] = useState(false);
@@ -36,16 +27,7 @@ export default function TerminalContact() {
   }
 
   return (
-    <div className="relative mt-4 min-h-[220px] font-mono">
-      {/* Decorative backdrop: faint boot log, non-interactive */}
-      <pre
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 m-0 select-none whitespace-pre-wrap text-[11px] leading-relaxed text-accent/20"
-      >
-        {BOOT_LINES}
-      </pre>
-
-      {/* Foreground: the dominant contact card */}
+    <div className="relative mt-4 font-mono">
       <div className="relative z-10 flex flex-col items-start gap-6 py-4">
         <div>
           <p className="m-0 mb-2 text-xs uppercase tracking-[0.2em] text-muted">
@@ -83,14 +65,6 @@ export default function TerminalContact() {
           </span>
           Download Résumé
         </a>
-
-        {/* Blinking cursor — "still running" */}
-        <p className="m-0 text-sm text-accent">
-          {"> "}
-          <span className="animate-pulse" aria-hidden="true">
-            _
-          </span>
-        </p>
       </div>
     </div>
   );

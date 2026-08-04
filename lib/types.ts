@@ -9,6 +9,8 @@ export interface DevProject {
   link: string | null;
   // Tag slugs this project belongs to. Drives auto-discovery on /tags/<slug>.
   tags?: string[];
+  // Pinned to the homepage's Featured Projects row.
+  featured?: boolean;
   created_at: string;
 }
 

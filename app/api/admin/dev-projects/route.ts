@@ -27,6 +27,7 @@ export async function POST(req: Request) {
     screenshot_url?: string;
     link?: string;
     tags?: string;
+    featured?: string | boolean;
   }>(req);
   if (!body?.title?.trim()) {
     return NextResponse.json({ error: "Title is required." }, { status: 400 });
@@ -39,11 +40,14 @@ export async function POST(req: Request) {
       screenshot_url: body.screenshot_url?.trim() || null,
       link: body.link?.trim() || null,
       tags: parseTags(body.tags),
+      featured: body.featured === true || body.featured === "true",
     })
     .select()
     .single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   revalidatePath("/");
+  revalidatePath("/projects");
+  revalidatePath("/security-research");
   return NextResponse.json({ data }, { status: 201 });
 }
 
@@ -58,6 +62,7 @@ export async function PUT(req: Request) {
     screenshot_url?: string;
     link?: string;
     tags?: string;
+    featured?: string | boolean;
   }>(req);
   if (!body?.id) {
     return NextResponse.json({ error: "id is required." }, { status: 400 });
@@ -69,12 +74,16 @@ export async function PUT(req: Request) {
       description: body.description?.trim() ?? "",
       screenshot_url: body.screenshot_url?.trim() || null,
       link: body.link?.trim() || null,
+      tags: parseTags(body.tags),
+      featured: body.featured === true || body.featured === "true",
     })
     .eq("id", body.id)
     .select()
     .single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   revalidatePath("/");
+  revalidatePath("/projects");
+  revalidatePath("/security-research");
   return NextResponse.json({ data });
 }
 
@@ -87,5 +96,7 @@ export async function DELETE(req: Request) {
   const { error } = await guard.client.from(TABLE).delete().eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   revalidatePath("/");
+  revalidatePath("/projects");
+  revalidatePath("/security-research");
   return NextResponse.json({ ok: true });
 }

@@ -14,15 +14,19 @@ import {
 import TerminalContact from "@/app/components/TerminalContact";
 import Link from "next/link";
 import {
-  getDevProjects,
+  getFeaturedProjects,
+  getEngineeringProjects,
   getCollaborations,
   getToolkitItems,
   getHeroTags,
 } from "@/lib/data";
 import { getHeroImage } from "@/lib/hero";
 
-// How many project cards show in the section before the "Show More" CTA.
-const PROJECTS_PREVIEW = 6;
+// The homepage shows a short, curated Featured Projects row — not the whole
+// catalogue — so it stays scannable. "Show More" opens the full engineering
+// archive at /projects. Security research is excluded entirely; it has its own
+// portfolio at /security-research.
+const FEATURED_LIMIT = 3;
 
 export const metadata: Metadata = {
   title: "Developer",
@@ -30,15 +34,16 @@ export const metadata: Metadata = {
 };
 
 export default async function DeveloperPage() {
-  const [projects, collaborations, toolkit, heroImage, tags] = await Promise.all([
-    getDevProjects(),
-    getCollaborations(),
-    getToolkitItems(),
-    getHeroImage("developer"),
-    getHeroTags("developer"),
-  ]);
-  const previewProjects = projects.slice(0, PROJECTS_PREVIEW);
-  const hasMoreProjects = projects.length > PROJECTS_PREVIEW;
+  const [featured, allEngineering, collaborations, toolkit, heroImage, tags] =
+    await Promise.all([
+      getFeaturedProjects(FEATURED_LIMIT),
+      getEngineeringProjects(),
+      getCollaborations(),
+      getToolkitItems(),
+      getHeroImage("developer"),
+      getHeroTags("developer"),
+    ]);
+  const hasMoreProjects = allEngineering.length > featured.length;
 
   return (
     <div
@@ -62,12 +67,12 @@ export default async function DeveloperPage() {
           >
             <header className="flex items-end justify-between border-b border-border pb-4">
               <h3 className="m-0 text-h3 uppercase tracking-widest text-ink">
-                <span className="mr-2 text-accent">//</span> Projects
+                <span className="mr-2 text-accent">//</span> Featured Projects
               </h3>
             </header>
-            {projects.length > 0 ? (
+            {featured.length > 0 ? (
               <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-                {previewProjects.map((p, i) => (
+                {featured.map((p, i) => (
                   <Reveal key={p.id} delay={i * 60}>
                     <DevProjectCard p={p} />
                   </Reveal>
