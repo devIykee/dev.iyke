@@ -62,6 +62,26 @@ create table if not exists public.toolkit_items (
   sort_order integer not null default 0
 );
 
+-- Hero tag pills + per-tag showcase pages (migration 003). sort_order (not
+-- "order", a reserved keyword) mirrors the rest of the schema.
+create table if not exists public.hero_tags (
+  id         uuid primary key default gen_random_uuid(),
+  persona    text not null check (persona in ('developer', 'motion', 'writer')),
+  label      text not null,
+  slug       text not null,
+  sort_order integer not null default 0,
+  created_at timestamptz not null default now(),
+  unique (persona, slug)
+);
+
+create table if not exists public.tag_showcases (
+  id          uuid primary key default gen_random_uuid(),
+  tag_slug    text not null unique,
+  intro_blurb text not null default '',
+  project_ids text[] not null default '{}',
+  created_at  timestamptz not null default now()
+);
+
 -- ---------------------------------------------------------------------------
 -- Row Level Security
 -- Public pages read with the anon key -> allow SELECT to everyone.
@@ -73,6 +93,8 @@ alter table public.motion_projects  enable row level security;
 alter table public.writer_posts     enable row level security;
 alter table public.collaborations   enable row level security;
 alter table public.toolkit_items    enable row level security;
+alter table public.hero_tags        enable row level security;
+alter table public.tag_showcases    enable row level security;
 
 do $$
 begin
@@ -95,6 +117,14 @@ begin
   -- toolkit_items
   if not exists (select 1 from pg_policies where policyname = 'toolkit_items public read') then
     create policy "toolkit_items public read" on public.toolkit_items for select using (true);
+  end if;
+  -- hero_tags
+  if not exists (select 1 from pg_policies where policyname = 'hero_tags public read') then
+    create policy "hero_tags public read" on public.hero_tags for select using (true);
+  end if;
+  -- tag_showcases
+  if not exists (select 1 from pg_policies where policyname = 'tag_showcases public read') then
+    create policy "tag_showcases public read" on public.tag_showcases for select using (true);
   end if;
 end$$;
 
@@ -122,3 +152,30 @@ insert into public.toolkit_items (name, icon_key, sort_order) values
   ('TypeScript', 'typescript', 3),
   ('PERN Stack', 'pern', 4)
 on conflict do nothing;
+
+insert into public.hero_tags (persona, label, slug, sort_order) values
+  ('developer', 'SecRes',       'security-research', 0),
+  ('developer', 'Solana',       'solana',            1),
+  ('developer', 'Java',         'java',              2),
+  ('developer', 'Full-Stack',   'full-stack',        3),
+  ('motion',    'Motion',       'motion-design',     0),
+  ('motion',    'TikTok',       'tiktok',            1),
+  ('motion',    'YouTube',      'youtube',           2),
+  ('motion',    'UI Anim',      'ui-animation',      3),
+  ('writer',    'Tech Writing', 'technical-writing', 0),
+  ('writer',    'Case Studies', 'case-studies',      1),
+  ('writer',    'Solana',       'solana',            2)
+on conflict (persona, slug) do nothing;
+
+insert into public.tag_showcases (tag_slug, intro_blurb) values
+  ('security-research', 'Authorized Web3 / smart-contract security research — audits and bug-bounty work on launchpad and DeFi protocols. Fork / eth_call / local-Foundry methodology; high-severity findings responsibly disclosed. Selected writeups below.'),
+  ('solana',            '[Intro blurb for #Solana goes here]'),
+  ('java',              '[Intro blurb for #Java goes here]'),
+  ('full-stack',        '[Intro blurb for #Full-Stack goes here]'),
+  ('motion-design',     '[Intro blurb for #Motion goes here]'),
+  ('tiktok',            '[Intro blurb for #TikTok goes here]'),
+  ('youtube',           '[Intro blurb for #YouTube goes here]'),
+  ('ui-animation',      '[Intro blurb for #UI-Animation goes here]'),
+  ('technical-writing', '[Intro blurb for #Technical-Writing goes here]'),
+  ('case-studies',      '[Intro blurb for #Case-Studies goes here]')
+on conflict (tag_slug) do nothing;

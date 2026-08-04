@@ -48,5 +48,26 @@ export interface ToolkitItem {
   sort_order: number;
 }
 
+// A clickable "tag pill" scattered around a persona's hero. Links to its
+// showcase page at /tags/<slug>.
+export interface HeroTag {
+  id: string;
+  persona: Persona;
+  label: string;
+  slug: string;
+  // sort_order (not "order" — reserved SQL keyword) matches the DB column.
+  sort_order: number;
+}
+
+// The curated showcase behind each tag slug: a short intro blurb + an ordered
+// list of existing project/post ids to feature on /tags/<slug>.
+export interface TagShowcase {
+  id: string;
+  tag_slug: string;
+  intro_blurb: string;
+  project_ids: string[];
+  created_at: string;
+}
+
 // Persona identifiers used to parameterize shared layout.
 export type Persona = "motion" | "developer" | "writer";

@@ -1,6 +1,7 @@
-import type { Persona } from "@/lib/types";
+import type { Persona, HeroTag } from "@/lib/types";
 import { PERSONAS } from "@/lib/personas";
 import AppImage from "./AppImage";
+import HeroTags from "./HeroTags";
 
 // Only the profile shape differs per persona; all colors come from the semantic
 // theme tokens (base/ink/accent…), so the six combos are automatic.
@@ -23,9 +24,11 @@ const PROFILE_SHAPE: Record<Persona, string> = {
 export default function PersonaHeader({
   persona,
   imageSrc = "/iyke-profile.jpg",
+  tags = [],
 }: {
   persona: Persona;
   imageSrc?: string;
+  tags?: HeroTag[];
 }) {
   const config = PERSONAS[persona];
 
@@ -87,6 +90,9 @@ export default function PersonaHeader({
           />
         </div>
       </div>
+
+      {/* Focus-area tag cloud — scattered pills (sm+) / wrapped row (mobile). */}
+      <HeroTags tags={tags} />
     </header>
   );
 }

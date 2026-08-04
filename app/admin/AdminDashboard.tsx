@@ -8,11 +8,14 @@ import type {
   WriterPost,
   Collaboration,
   ToolkitItem,
+  HeroTag,
+  TagShowcase,
   Persona,
 } from "@/lib/types";
 import { TOOLKIT_ICON_KEYS, TOOLKIT_ICON_LABELS } from "@/lib/icons";
 import ResourceManager, { type ResourceConfig } from "./ResourceManager";
 import HeroManager from "./HeroManager";
+import TagsManager from "./TagsManager";
 
 type Tab =
   | "developer"
@@ -20,6 +23,7 @@ type Tab =
   | "writer"
   | "toolkit"
   | "collaborations"
+  | "tags"
   | "hero";
 
 const DEV_CONFIG: ResourceConfig = {
@@ -127,6 +131,8 @@ export default function AdminDashboard({
   initialToolkit,
   initialCollaborations,
   initialHeroes,
+  initialTags,
+  initialShowcases,
 }: {
   supabaseReady: boolean;
   initialDev: DevProject[];
@@ -135,6 +141,8 @@ export default function AdminDashboard({
   initialToolkit: ToolkitItem[];
   initialCollaborations: Collaboration[];
   initialHeroes: Record<Persona, string>;
+  initialTags: HeroTag[];
+  initialShowcases: TagShowcase[];
 }) {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("developer");
@@ -150,6 +158,7 @@ export default function AdminDashboard({
     { id: "writer", label: "Writer / Blog" },
     { id: "toolkit", label: "Toolkit" },
     { id: "collaborations", label: "Collaborations" },
+    { id: "tags", label: "Tags" },
     { id: "hero", label: "Hero Photos" },
   ];
 
@@ -213,6 +222,15 @@ export default function AdminDashboard({
           <ResourceManager
             config={COLLAB_CONFIG}
             initialItems={initialCollaborations}
+          />
+        )}
+        {tab === "tags" && (
+          <TagsManager
+            initialTags={initialTags}
+            initialShowcases={initialShowcases}
+            devProjects={initialDev}
+            motionProjects={initialMotion}
+            writerPosts={initialWriter}
           />
         )}
         {tab === "hero" && <HeroManager initial={initialHeroes} />}

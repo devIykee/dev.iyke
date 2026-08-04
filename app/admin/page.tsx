@@ -10,6 +10,8 @@ import type {
   WriterPost,
   ToolkitItem,
   Collaboration,
+  HeroTag,
+  TagShowcase,
 } from "@/lib/types";
 
 export const metadata: Metadata = {
@@ -37,20 +39,30 @@ export default async function AdminPage() {
   let writer: WriterPost[] = [];
   let toolkit: ToolkitItem[] = [];
   let collaborations: Collaboration[] = [];
+  let heroTags: HeroTag[] = [];
+  let tagShowcases: TagShowcase[] = [];
 
   if (client) {
-    const [d, m, w, t, c] = await Promise.all([
+    const [d, m, w, t, c, ht, ts] = await Promise.all([
       client.from("dev_projects").select("*").order("created_at", { ascending: false }),
       client.from("motion_projects").select("*").order("created_at", { ascending: false }),
       client.from("writer_posts").select("*").order("date", { ascending: false }),
       client.from("toolkit_items").select("*").order("sort_order", { ascending: true }),
       client.from("collaborations").select("*").order("sort_order", { ascending: true }),
+      client
+        .from("hero_tags")
+        .select("*")
+        .order("persona", { ascending: true })
+        .order("sort_order", { ascending: true }),
+      client.from("tag_showcases").select("*"),
     ]);
     dev = (d.data as DevProject[]) ?? [];
     motion = (m.data as MotionProject[]) ?? [];
     writer = (w.data as WriterPost[]) ?? [];
     toolkit = (t.data as ToolkitItem[]) ?? [];
     collaborations = (c.data as Collaboration[]) ?? [];
+    heroTags = (ht.data as HeroTag[]) ?? [];
+    tagShowcases = (ts.data as TagShowcase[]) ?? [];
   }
 
   const heroes = await getAllHeroImages();
@@ -64,6 +76,8 @@ export default async function AdminPage() {
       initialToolkit={toolkit}
       initialCollaborations={collaborations}
       initialHeroes={heroes}
+      initialTags={heroTags}
+      initialShowcases={tagShowcases}
     />
   );
 }

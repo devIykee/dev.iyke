@@ -2,10 +2,15 @@ import type { Metadata } from "next";
 import PersonaHeader from "@/app/components/PersonaHeader";
 import PersonaChrome from "@/app/components/PersonaChrome";
 import PersonaFooter from "@/app/components/PersonaFooter";
+import Link from "next/link";
 import Reveal from "@/app/components/Reveal";
 import SocialLinks from "@/app/components/SocialLinks";
-import { getMotionProjects } from "@/lib/data";
+import { MotionCaseStudyCard } from "@/app/components/ContentCards";
+import { getMotionProjects, getHeroTags } from "@/lib/data";
 import { getHeroImage } from "@/lib/hero";
+
+// Case-study cards shown before the "Show More" CTA (feature reel is separate).
+const CASE_STUDIES_PREVIEW = 6;
 
 export const metadata: Metadata = {
   title: "Motion",
@@ -13,11 +18,14 @@ export const metadata: Metadata = {
 };
 
 export default async function MotionPage() {
-  const [projects, heroImage] = await Promise.all([
+  const [projects, heroImage, tags] = await Promise.all([
     getMotionProjects(),
     getHeroImage("motion"),
+    getHeroTags("motion"),
   ]);
   const [feature, ...rest] = projects;
+  const previewRest = rest.slice(0, CASE_STUDIES_PREVIEW);
+  const hasMoreCaseStudies = rest.length > CASE_STUDIES_PREVIEW;
 
   return (
     <div
@@ -27,7 +35,7 @@ export default async function MotionPage() {
       <PersonaChrome persona="motion" />
 
       <div className="page-enter overflow-x-hidden pb-28">
-        <PersonaHeader persona="motion" imageSrc={heroImage} />
+        <PersonaHeader persona="motion" imageSrc={heroImage} tags={tags} />
 
         <main className="mx-auto max-w-bento px-4 pt-16 md:px-margin">
         {/* REEL — the lead feature video, large scale */}
@@ -63,33 +71,25 @@ export default async function MotionPage() {
           <SectionLabel>Case Studies</SectionLabel>
           {rest.length > 0 ? (
             <div className="grid grid-cols-1 gap-gutter sm:grid-cols-2 lg:grid-cols-3">
-              {rest.map((p) => (
-                <article
-                  key={p.id}
-                  className="flex flex-col overflow-hidden rounded-xl border border-border bg-surface transition-transform duration-200 hover:-translate-y-1"
-                >
-                  <div className="aspect-video w-full bg-base">
-                    <iframe
-                      className="h-full w-full"
-                      src={`https://www.youtube.com/embed/${p.youtube_id}`}
-                      title={p.title}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  </div>
-                  <div className="flex flex-1 flex-col p-5">
-                    <h4 className="mb-2 text-lg font-extrabold text-ink">
-                      {p.title}
-                    </h4>
-                    <p className="line-clamp-3 text-sm text-muted">
-                      {p.description}
-                    </p>
-                  </div>
-                </article>
+              {previewRest.map((p) => (
+                <MotionCaseStudyCard key={p.id} p={p} />
               ))}
             </div>
           ) : (
             <EmptyNote>More case studies coming soon.</EmptyNote>
+          )}
+          {hasMoreCaseStudies && (
+            <div className="mt-8 flex justify-center">
+              <Link
+                href="/motion/work"
+                className="inline-flex items-center gap-2 rounded-full border border-accent px-6 py-2.5 text-label uppercase tracking-wide text-accent transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent hover:text-accent-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-base"
+              >
+                Show More
+                <span className="material-symbols-outlined text-[16px]">
+                  arrow_forward
+                </span>
+              </Link>
+            </div>
           )}
         </Reveal>
 

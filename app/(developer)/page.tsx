@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import PersonaHeader from "@/app/components/PersonaHeader";
 import PersonaChrome from "@/app/components/PersonaChrome";
 import PersonaFooter from "@/app/components/PersonaFooter";
-import ScreenshotFrame from "@/app/components/ScreenshotFrame";
 import Reveal from "@/app/components/Reveal";
 import AutoScrollY from "@/app/components/AutoScrollY";
 import AutoScrollX from "@/app/components/AutoScrollX";
@@ -10,10 +9,20 @@ import {
   ToolkitChip,
   CollaborationRow,
   EmptyRow,
+  DevProjectCard,
 } from "@/app/components/ContentCards";
 import TerminalContact from "@/app/components/TerminalContact";
-import { getDevProjects, getCollaborations, getToolkitItems } from "@/lib/data";
+import Link from "next/link";
+import {
+  getDevProjects,
+  getCollaborations,
+  getToolkitItems,
+  getHeroTags,
+} from "@/lib/data";
 import { getHeroImage } from "@/lib/hero";
+
+// How many project cards show in the section before the "Show More" CTA.
+const PROJECTS_PREVIEW = 6;
 
 export const metadata: Metadata = {
   title: "Developer",
@@ -21,12 +30,15 @@ export const metadata: Metadata = {
 };
 
 export default async function DeveloperPage() {
-  const [projects, collaborations, toolkit, heroImage] = await Promise.all([
+  const [projects, collaborations, toolkit, heroImage, tags] = await Promise.all([
     getDevProjects(),
     getCollaborations(),
     getToolkitItems(),
     getHeroImage("developer"),
+    getHeroTags("developer"),
   ]);
+  const previewProjects = projects.slice(0, PROJECTS_PREVIEW);
+  const hasMoreProjects = projects.length > PROJECTS_PREVIEW;
 
   return (
     <div
@@ -38,7 +50,7 @@ export default async function DeveloperPage() {
       <PersonaChrome persona="developer" />
 
       <div className="page-enter overflow-x-hidden pb-28">
-        <PersonaHeader persona="developer" imageSrc={heroImage} />
+        <PersonaHeader persona="developer" imageSrc={heroImage} tags={tags} />
 
         <main className="mx-auto max-w-bento px-4 pt-16 md:px-margin">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
@@ -55,44 +67,27 @@ export default async function DeveloperPage() {
             </header>
             {projects.length > 0 ? (
               <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-                {projects.map((p, i) => (
-                  <Reveal
-                    key={p.id}
-                    as="article"
-                    delay={i * 60}
-                    className="group flex flex-col overflow-hidden rounded-xl border border-border transition-transform duration-200 hover:-translate-y-1"
-                  >
-                    <ScreenshotFrame
-                      src={p.screenshot_url}
-                      label="IMG_PLACEHOLDER"
-                      alt={`${p.title} project screenshot`}
-                      className="h-48 border-b border-border bg-elevated"
-                      labelClassName="text-muted font-mono tracking-widest"
-                    />
-                    <div className="flex flex-1 flex-col bg-base p-4">
-                      <h4 className="mb-2 text-lg font-bold text-ink transition-colors group-hover:text-accent">
-                        {p.title}
-                      </h4>
-                      <p className="mb-6 line-clamp-2 flex-1 text-sm text-muted">
-                        {p.description}
-                      </p>
-                      <a
-                        href={p.link ?? "#"}
-                        target={p.link && p.link !== "#" ? "_blank" : undefined}
-                        rel="noreferrer"
-                        className="inline-flex items-center gap-2 text-sm font-bold uppercase text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-                      >
-                        Explore
-                        <span className="material-symbols-outlined text-[16px]">
-                          arrow_forward
-                        </span>
-                      </a>
-                    </div>
+                {previewProjects.map((p, i) => (
+                  <Reveal key={p.id} delay={i * 60}>
+                    <DevProjectCard p={p} />
                   </Reveal>
                 ))}
               </div>
             ) : (
               <EmptyRow label="No projects yet." />
+            )}
+            {hasMoreProjects && (
+              <div className="flex justify-center pt-2">
+                <Link
+                  href="/projects"
+                  className="inline-flex items-center gap-2 rounded-full border border-accent px-6 py-2.5 text-sm font-bold uppercase tracking-wide text-accent transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent hover:text-accent-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-base"
+                >
+                  Show More
+                  <span className="material-symbols-outlined text-[16px]">
+                    arrow_forward
+                  </span>
+                </Link>
+              </div>
             )}
           </Reveal>
 

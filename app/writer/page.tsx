@@ -6,8 +6,11 @@ import PersonaFooter from "@/app/components/PersonaFooter";
 import Reveal from "@/app/components/Reveal";
 import SocialLinks from "@/app/components/SocialLinks";
 import { EmptyRow } from "@/app/components/ContentCards";
-import { getWriterPosts } from "@/lib/data";
+import { getWriterPosts, getHeroTags } from "@/lib/data";
 import { getHeroImage } from "@/lib/hero";
+
+// Articles listed before the "Show More" CTA links to the full archive.
+const ARTICLES_PREVIEW = 5;
 
 export const metadata: Metadata = {
   title: "Writer",
@@ -26,10 +29,13 @@ function formatDate(iso: string): string {
 }
 
 export default async function WriterPage() {
-  const [posts, heroImage] = await Promise.all([
+  const [posts, heroImage, tags] = await Promise.all([
     getWriterPosts(),
     getHeroImage("writer"),
+    getHeroTags("writer"),
   ]);
+  const previewPosts = posts.slice(0, ARTICLES_PREVIEW);
+  const hasMorePosts = posts.length > ARTICLES_PREVIEW;
 
   return (
     <div
@@ -39,7 +45,7 @@ export default async function WriterPage() {
       <PersonaChrome persona="writer" />
 
       <div className="page-enter overflow-x-hidden pb-28">
-        <PersonaHeader persona="writer" imageSrc={heroImage} />
+        <PersonaHeader persona="writer" imageSrc={heroImage} tags={tags} />
 
         {/* Single, narrow, centered reading rail — max 720px */}
         <main className="mx-auto max-w-reading px-6 pt-16">
@@ -50,7 +56,7 @@ export default async function WriterPage() {
           </h3>
           {posts.length > 0 ? (
             <ul className="m-0 list-none p-0">
-              {posts.map((post) => (
+              {previewPosts.map((post) => (
                 <li
                   key={post.id}
                   className="border-t border-border py-8 first:border-t-0 first:pt-0"
@@ -80,6 +86,16 @@ export default async function WriterPage() {
             </ul>
           ) : (
             <EmptyRow label="No articles published yet." />
+          )}
+          {hasMorePosts && (
+            <div className="mt-10">
+              <Link
+                href="/writer/articles"
+                className="inline-flex items-center gap-2 text-label uppercase tracking-wider text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              >
+                Show more articles →
+              </Link>
+            </div>
           )}
         </Reveal>
 
