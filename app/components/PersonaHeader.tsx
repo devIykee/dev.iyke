@@ -72,6 +72,9 @@ export default function PersonaHeader({
               Resume
             </a>
           </div>
+
+          {/* Focus-area tags — directly under the Hire Me / Resume buttons. */}
+          <HeroTags tags={tags} />
         </div>
 
         {/* RIGHT: large profile photo */}
@@ -90,9 +93,6 @@ export default function PersonaHeader({
           />
         </div>
       </div>
-
-      {/* Focus-area tag cloud — scattered pills (sm+) / wrapped row (mobile). */}
-      <HeroTags tags={tags} />
     </header>
   );
 }
