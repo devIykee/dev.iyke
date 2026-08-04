@@ -15,6 +15,9 @@ create table if not exists public.dev_projects (
   description    text not null default '',
   screenshot_url text,
   link           text,
+  -- Free-form tag slugs (migration 004). A project appears on /tags/<slug>
+  -- automatically when this array contains that slug.
+  tags           text[] not null default '{}',
   created_at     timestamptz not null default now()
 );
 
@@ -24,6 +27,7 @@ create table if not exists public.motion_projects (
   description   text not null default '',
   youtube_id    text not null,
   thumbnail_url text,
+  tags          text[] not null default '{}',
   created_at    timestamptz not null default now()
 );
 
@@ -35,11 +39,20 @@ create table if not exists public.writer_posts (
   excerpt     text not null default '',
   body        text not null default '',
   status      text not null default 'published' check (status in ('draft', 'published')),
+  tags        text[] not null default '{}',
   created_at  timestamptz not null default now()
 );
 
 -- If the table predates draft/publish, add the column (migration 002).
 alter table public.writer_posts add column if not exists status text not null default 'published';
+
+-- Tag arrays for auto-discovery on /tags/<slug> (migration 004).
+alter table public.dev_projects    add column if not exists tags text[] not null default '{}';
+alter table public.motion_projects add column if not exists tags text[] not null default '{}';
+alter table public.writer_posts    add column if not exists tags text[] not null default '{}';
+create index if not exists dev_projects_tags_idx    on public.dev_projects    using gin (tags);
+create index if not exists motion_projects_tags_idx on public.motion_projects using gin (tags);
+create index if not exists writer_posts_tags_idx    on public.writer_posts    using gin (tags);
 
 create table if not exists public.collaborations (
   id         uuid primary key default gen_random_uuid(),
@@ -78,9 +91,15 @@ create table if not exists public.tag_showcases (
   id          uuid primary key default gen_random_uuid(),
   tag_slug    text not null unique,
   intro_blurb text not null default '',
+  -- Optional manual pin list: these ids render first, in this order. Items that
+  -- carry the slug in their own `tags` array are appended automatically.
   project_ids text[] not null default '{}',
+  -- Optional role-specific résumé surfaced on this showcase only (migration 004).
+  resume_url  text,
   created_at  timestamptz not null default now()
 );
+
+alter table public.tag_showcases add column if not exists resume_url text;
 
 -- ---------------------------------------------------------------------------
 -- Row Level Security

@@ -64,6 +64,7 @@ export default function TagsManager({
   const selShowcase = showcases[selSlug];
   const [blurb, setBlurb] = useState<string>(selShowcase?.intro_blurb ?? "");
   const [selIds, setSelIds] = useState<string[]>(selShowcase?.project_ids ?? []);
+  const [resumeUrl, setResumeUrl] = useState<string>(selShowcase?.resume_url ?? "");
   const [showErr, setShowErr] = useState<string | null>(null);
   const [savedOk, setSavedOk] = useState(false);
 
@@ -84,6 +85,7 @@ export default function TagsManager({
     const sc = showcases[next];
     setBlurb(sc?.intro_blurb ?? "");
     setSelIds(sc?.project_ids ?? []);
+    setResumeUrl(sc?.resume_url ?? "");
     setShowErr(null);
     setSavedOk(false);
   }
@@ -201,6 +203,7 @@ export default function TagsManager({
           tag_slug: selSlug,
           intro_blurb: blurb,
           project_ids: selIds,
+          resume_url: resumeUrl,
         }),
       });
       if (!res.ok) {
@@ -413,9 +416,31 @@ export default function TagsManager({
               />
             </label>
 
+            <label className="flex flex-col gap-1">
+              <span className="text-xs uppercase tracking-wider text-neutral-400">
+                Résumé link (optional)
+              </span>
+              <input
+                type="text"
+                value={resumeUrl}
+                onChange={(e) => setResumeUrl(e.target.value)}
+                placeholder="/resume/security-research"
+                className={inputClass}
+              />
+              <span className="text-xs text-neutral-500">
+                Shown as a button on this showcase only. Leave empty on tags that
+                should just use the site-wide Resume button.
+              </span>
+            </label>
+
             <div className="flex flex-col gap-2">
               <span className="text-xs uppercase tracking-wider text-neutral-400">
-                Featured {selPersona ?? "developer"} items ({selIds.length} selected)
+                Pinned {selPersona ?? "developer"} items ({selIds.length} selected)
+              </span>
+              <span className="text-xs text-neutral-500">
+                Optional. Pinned items render first, in list order. Anything
+                tagged <code>{selSlug || "<slug>"}</code> on the item itself is
+                appended automatically — no pinning required.
               </span>
               <ul className="m-0 flex max-h-72 list-none flex-col gap-1 overflow-y-auto rounded-lg border border-neutral-800 p-2">
                 {personaItems.length === 0 && (

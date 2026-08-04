@@ -37,6 +37,11 @@ const DEV_CONFIG: ResourceConfig = {
     { name: "description", label: "Description", type: "textarea" },
     { name: "screenshot_url", label: "Screenshot", type: "image" },
     { name: "link", label: "Project link", type: "url" },
+    {
+      name: "tags",
+      label: "Tags (comma-separated, e.g. security-research)",
+      type: "text",
+    },
   ],
 };
 
@@ -58,6 +63,11 @@ const MOTION_CONFIG: ResourceConfig = {
       readFrom: "youtube_id",
     },
     { name: "thumbnail_url", label: "Thumbnail (optional)", type: "image" },
+    {
+      name: "tags",
+      label: "Tags (comma-separated, e.g. security-research)",
+      type: "text",
+    },
   ],
 };
 
@@ -82,6 +92,11 @@ const WRITER_CONFIG: ResourceConfig = {
     },
     { name: "excerpt", label: "Excerpt", type: "textarea" },
     { name: "body", label: "Body (Markdown)", type: "markdown" },
+    {
+      name: "tags",
+      label: "Tags (comma-separated, e.g. security-research)",
+      type: "text",
+    },
   ],
 };
 

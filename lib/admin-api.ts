@@ -38,3 +38,27 @@ export async function readJson<T>(req: Request): Promise<T | null> {
     return null;
   }
 }
+
+/**
+ * Normalizes the admin form's comma-separated tag string into the text[] the
+ * content tables store. Slugified (lowercase, dashes) so what's typed always
+ * matches the /tags/<slug> route and hero_tags.slug it needs to line up with.
+ */
+export function parseTags(input: unknown): string[] {
+  if (Array.isArray(input)) input = input.join(",");
+  if (typeof input !== "string") return [];
+  return [
+    ...new Set(
+      input
+        .split(",")
+        .map((t) =>
+          t
+            .trim()
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, "")
+        )
+        .filter(Boolean)
+    ),
+  ];
+}

@@ -12,7 +12,9 @@ export async function GET() {
   return NextResponse.json({ data });
 }
 
-// PUT — upsert a showcase by tag_slug (blurb + featured project ids). One row
+// PUT — upsert a showcase by tag_slug (blurb, pinned ids, optional résumé link).
+// project_ids only PINS items; anything tagged with the slug is discovered
+// automatically by /tags/<slug>. One row
 // per slug; conflicting inserts update in place.
 export async function PUT(req: Request) {
   const guard = await requireAdmin();
@@ -21,6 +23,7 @@ export async function PUT(req: Request) {
     tag_slug?: string;
     intro_blurb?: string;
     project_ids?: string[];
+    resume_url?: string;
   }>(req);
   if (!body?.tag_slug?.trim()) {
     return NextResponse.json({ error: "tag_slug is required." }, { status: 400 });
@@ -35,6 +38,7 @@ export async function PUT(req: Request) {
         tag_slug: body.tag_slug.trim(),
         intro_blurb: body.intro_blurb?.trim() ?? "",
         project_ids,
+        resume_url: body.resume_url?.trim() || null,
       },
       { onConflict: "tag_slug" }
     )

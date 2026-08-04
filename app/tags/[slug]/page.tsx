@@ -60,22 +60,36 @@ export default async function TagShowcasePage({
   const blurb = showcase?.intro_blurb?.trim() ?? "";
   const isPlaceholderBlurb = blurb.startsWith("[");
 
-  // Pull the persona's items and keep only the featured ids, in showcase order.
+  /**
+   * A showcase is populated from two sources, in this order:
+   *
+   *  1. `showcase.project_ids` — optional manual pins, kept in the given order.
+   *  2. auto-discovery — anything whose own `tags` array contains this slug.
+   *
+   * Auto-discovery is the default path: tag a project and it shows up here with
+   * no curation step. Pinning only exists to force a few items to the front.
+   */
+  function select<T extends { id: string; tags?: string[] }>(all: T[]): T[] {
+    const byId = new Map(all.map((item) => [item.id, item]));
+    const pinned = ids
+      .map((id) => byId.get(id))
+      .filter((item): item is T => Boolean(item));
+    const pinnedIds = new Set(pinned.map((item) => item.id));
+    const discovered = all.filter(
+      (item) => !pinnedIds.has(item.id) && item.tags?.includes(slug)
+    );
+    return [...pinned, ...discovered];
+  }
+
   let devItems: Awaited<ReturnType<typeof getDevProjects>> = [];
   let motionItems: Awaited<ReturnType<typeof getMotionProjects>> = [];
   let writerItems: Awaited<ReturnType<typeof getWriterPosts>> = [];
   if (persona === "developer") {
-    const all = await getDevProjects();
-    const byId = new Map(all.map((p) => [p.id, p]));
-    devItems = ids.map((id) => byId.get(id)).filter((p): p is (typeof all)[number] => Boolean(p));
+    devItems = select(await getDevProjects());
   } else if (persona === "motion") {
-    const all = await getMotionProjects();
-    const byId = new Map(all.map((p) => [p.id, p]));
-    motionItems = ids.map((id) => byId.get(id)).filter((p): p is (typeof all)[number] => Boolean(p));
+    motionItems = select(await getMotionProjects());
   } else {
-    const all = await getWriterPosts();
-    const byId = new Map(all.map((p) => [p.id, p]));
-    writerItems = ids.map((id) => byId.get(id)).filter((p): p is (typeof all)[number] => Boolean(p));
+    writerItems = select(await getWriterPosts());
   }
 
   const count = devItems.length + motionItems.length + writerItems.length;
@@ -115,6 +129,21 @@ export default async function TagShowcasePage({
             >
               {blurb || `Selected work tagged ${label}.`}
             </p>
+
+            {/* Optional showcase-specific résumé. Data-driven via
+                tag_showcases.resume_url, so it appears on this tag only — the
+                site-wide Resume button still points at the general resume.pdf. */}
+            {showcase?.resume_url && (
+              <a
+                href={showcase.resume_url}
+                className="mt-2 inline-flex w-fit items-center gap-2 rounded-full border border-accent bg-accent px-6 py-2.5 text-sm font-semibold uppercase tracking-wide text-accent-ink transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-base"
+              >
+                <span className="material-symbols-outlined text-[18px]">
+                  description
+                </span>
+                {label} Résumé
+              </a>
+            )}
           </div>
 
           {/* Featured work */}
@@ -163,8 +192,11 @@ export default async function TagShowcasePage({
             )
           ) : (
             <div className="flex items-center justify-center rounded-2xl border border-dashed border-border bg-surface px-6 py-14 text-center text-sm text-muted">
-              No projects linked yet — curate this showcase from{" "}
-              <span className="mx-1 font-semibold text-ink">/admin → Tags</span>.
+              Nothing tagged <span className="mx-1 font-semibold text-ink">{label}</span>{" "}
+              yet — tag items with{" "}
+              <code className="mx-1 text-ink">{slug}</code> in{" "}
+              <span className="mx-1 font-semibold text-ink">/admin</span>, or pin
+              them from <span className="mx-1 font-semibold text-ink">Tags</span>.
             </div>
           )}
         </main>

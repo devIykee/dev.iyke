@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireAdmin, readJson } from "@/lib/admin-api";
+import { requireAdmin, readJson, parseTags } from "@/lib/admin-api";
 import { revalidatePath } from "next/cache";
 
 const TABLE = "dev_projects";
@@ -26,6 +26,7 @@ export async function POST(req: Request) {
     description?: string;
     screenshot_url?: string;
     link?: string;
+    tags?: string;
   }>(req);
   if (!body?.title?.trim()) {
     return NextResponse.json({ error: "Title is required." }, { status: 400 });
@@ -37,6 +38,7 @@ export async function POST(req: Request) {
       description: body.description?.trim() ?? "",
       screenshot_url: body.screenshot_url?.trim() || null,
       link: body.link?.trim() || null,
+      tags: parseTags(body.tags),
     })
     .select()
     .single();
@@ -55,6 +57,7 @@ export async function PUT(req: Request) {
     description?: string;
     screenshot_url?: string;
     link?: string;
+    tags?: string;
   }>(req);
   if (!body?.id) {
     return NextResponse.json({ error: "id is required." }, { status: 400 });

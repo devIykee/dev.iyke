@@ -7,6 +7,8 @@ export interface DevProject {
   description: string;
   screenshot_url: string | null;
   link: string | null;
+  // Tag slugs this project belongs to. Drives auto-discovery on /tags/<slug>.
+  tags?: string[];
   created_at: string;
 }
 
@@ -16,6 +18,7 @@ export interface MotionProject {
   description: string;
   youtube_id: string;
   thumbnail_url: string | null;
+  tags?: string[];
   created_at: string;
 }
 
@@ -27,6 +30,7 @@ export interface WriterPost {
   excerpt: string;
   body: string; // markdown
   status?: "draft" | "published"; // optional until migration 002 is applied
+  tags?: string[];
   created_at: string;
 }
 
@@ -65,7 +69,11 @@ export interface TagShowcase {
   id: string;
   tag_slug: string;
   intro_blurb: string;
+  // Manual pins: rendered first, in this order. Anything else carrying the slug
+  // in its own `tags` array is appended automatically.
   project_ids: string[];
+  // Optional role-specific résumé link shown on this showcase only.
+  resume_url?: string | null;
   created_at: string;
 }
 

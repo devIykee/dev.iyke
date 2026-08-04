@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireAdmin, readJson } from "@/lib/admin-api";
+import { requireAdmin, readJson, parseTags } from "@/lib/admin-api";
 import { parseYouTubeId } from "@/lib/youtube";
 import { revalidatePath } from "next/cache";
 
@@ -24,6 +24,7 @@ export async function POST(req: Request) {
     description?: string;
     youtube?: string; // ID or full URL — parsed server-side
     thumbnail_url?: string;
+    tags?: string;
   }>(req);
   if (!body?.title?.trim()) {
     return NextResponse.json({ error: "Title is required." }, { status: 400 });
@@ -42,6 +43,7 @@ export async function POST(req: Request) {
       description: body.description?.trim() ?? "",
       youtube_id,
       thumbnail_url: body.thumbnail_url?.trim() || null,
+      tags: parseTags(body.tags),
     })
     .select()
     .single();
@@ -59,6 +61,7 @@ export async function PUT(req: Request) {
     description?: string;
     youtube?: string;
     thumbnail_url?: string;
+    tags?: string;
   }>(req);
   if (!body?.id) {
     return NextResponse.json({ error: "id is required." }, { status: 400 });
@@ -77,6 +80,7 @@ export async function PUT(req: Request) {
       description: body.description?.trim() ?? "",
       youtube_id,
       thumbnail_url: body.thumbnail_url?.trim() || null,
+      tags: parseTags(body.tags),
     })
     .eq("id", body.id)
     .select()

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireAdmin, readJson } from "@/lib/admin-api";
+import { requireAdmin, readJson, parseTags } from "@/lib/admin-api";
 import { slugify } from "@/lib/slug";
 import { revalidatePath } from "next/cache";
 
@@ -37,6 +37,7 @@ export async function POST(req: Request) {
     excerpt?: string;
     body?: string;
     status?: string;
+    tags?: string;
   }>(req);
   if (!body?.title?.trim()) {
     return NextResponse.json({ error: "Title is required." }, { status: 400 });
@@ -49,6 +50,7 @@ export async function POST(req: Request) {
     date: body.date?.trim() || new Date().toISOString().slice(0, 10),
     excerpt: body.excerpt?.trim() ?? "",
     body: body.body ?? "",
+    tags: parseTags(body.tags),
   };
 
   let { data, error } = await guard.client
@@ -87,6 +89,7 @@ export async function PUT(req: Request) {
     excerpt?: string;
     body?: string;
     status?: string;
+    tags?: string;
   }>(req);
   if (!body?.id) {
     return NextResponse.json({ error: "id is required." }, { status: 400 });
@@ -99,6 +102,7 @@ export async function PUT(req: Request) {
     date: body.date?.trim(),
     excerpt: body.excerpt?.trim() ?? "",
     body: body.body ?? "",
+    tags: parseTags(body.tags),
   };
 
   let { data, error } = await guard.client
