@@ -9,6 +9,7 @@ import {
   MotionCaseStudyCard,
 } from "@/app/components/ContentCards";
 import { PERSONAS } from "@/lib/personas";
+import type { NavSection } from "@/lib/personas";
 import {
   getHeroTagsBySlug,
   getTagShowcase,
@@ -41,6 +42,13 @@ export async function generateMetadata({
 
 // Note: /tags/security-research is redirected to the bespoke /security-research
 // portfolio by next.config.ts, so it never reaches this generic showcase.
+
+// A showcase has an intro and a body of work, not the persona home's sections,
+// so the floating nav gets labels that match what is actually on the page.
+const NAV: NavSection[] = [
+  { label: "Overview", href: "#overview" },
+  { label: "Selected work", href: "#work" },
+];
 
 export default async function TagShowcasePage({
   params,
@@ -103,12 +111,15 @@ export default async function TagShowcasePage({
       data-persona={persona}
       className={`relative min-h-screen bg-base text-ink ${PERSONA_FONT[persona]}`}
     >
-      <PersonaChrome persona={persona} />
+      <PersonaChrome persona={persona} sections={NAV} />
 
       <div className="page-enter overflow-x-hidden pb-28">
         <main className="mx-auto max-w-bento px-4 pt-24 md:px-margin md:pt-28">
           {/* Header: back link, tag title, intro blurb */}
-          <div className="mb-12 flex flex-col gap-4 border-b border-border pb-8">
+          <div
+            id="overview"
+            className="mb-12 flex flex-col gap-4 border-b border-border pb-8 scroll-mt-24"
+          >
             <Link
               href={config.path}
               className="inline-flex w-fit items-center gap-2 text-sm text-muted transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
@@ -151,6 +162,7 @@ export default async function TagShowcasePage({
           </div>
 
           {/* Featured work */}
+          <div id="work" className="scroll-mt-24" />
           {count > 0 ? (
             persona === "motion" ? (
               <div className="grid grid-cols-1 gap-gutter sm:grid-cols-2 lg:grid-cols-3">

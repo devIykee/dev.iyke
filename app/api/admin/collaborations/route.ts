@@ -34,6 +34,7 @@ export async function POST(req: Request) {
     role?: string;
     logo_url?: string;
     link_url?: string;
+    category?: string;
   }>(req);
   if (!body?.org?.trim()) {
     return NextResponse.json({ error: "Organization is required." }, { status: 400 });
@@ -46,6 +47,7 @@ export async function POST(req: Request) {
       role: body.role?.trim() ?? "",
       logo_url: body.logo_url?.trim() || null,
       link_url: body.link_url?.trim() || null,
+      category: body.category?.trim() || null,
       sort_order,
     })
     .select()
@@ -64,6 +66,7 @@ export async function PUT(req: Request) {
     role?: string;
     logo_url?: string;
     link_url?: string;
+    category?: string;
   }>(req);
   if (!body?.id) {
     return NextResponse.json({ error: "id is required." }, { status: 400 });
@@ -75,6 +78,7 @@ export async function PUT(req: Request) {
       role: body.role?.trim() ?? "",
       logo_url: body.logo_url?.trim() || null,
       link_url: body.link_url?.trim() || null,
+      category: body.category?.trim() || null,
     })
     .eq("id", body.id)
     .select()

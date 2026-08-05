@@ -5,6 +5,7 @@ import PersonaFooter from "@/app/components/PersonaFooter";
 import Reveal from "@/app/components/Reveal";
 import { DevProjectCard, EmptyRow } from "@/app/components/ContentCards";
 import { getSecurityProjects, getTagShowcase, SECURITY_TAG } from "@/lib/data";
+import type { NavSection } from "@/lib/personas";
 import type { DevProject } from "@/lib/types";
 
 /**
@@ -24,6 +25,14 @@ export const metadata: Metadata = {
 };
 
 const RESUME_HREF = "/resume/security-research";
+
+// This page has nothing in common with the developer home's sections, so it
+// carries its own. Same pill, same behaviour, different labels.
+const NAV: NavSection[] = [
+  { label: "Overview", href: "#overview" },
+  { label: "How I work", href: "#methodology" },
+  { label: "Findings", href: "#findings" },
+];
 // Content lives in Supabase and these pages prerender at build time. Next keeps
 // the build-time data reads in .next/cache, which Vercel restores between
 // deploys, so a database edit made outside /admin can otherwise stay invisible
@@ -128,12 +137,15 @@ export default async function SecurityResearchPage() {
       data-persona="developer"
       className="relative min-h-screen bg-base font-mono text-ink"
     >
-      <PersonaChrome persona="developer" />
+      <PersonaChrome persona="developer" sections={NAV} />
 
       <div className="page-enter overflow-x-hidden pb-28">
         <main className="mx-auto max-w-bento px-4 pt-24 md:px-margin md:pt-28">
           {/* ---- Introduction ---- */}
-          <div className="mb-12 flex flex-col gap-5 border-b border-border pb-10">
+          <div
+            id="overview"
+            className="mb-12 flex flex-col gap-5 border-b border-border pb-10 scroll-mt-24"
+          >
             <Link
               href="/"
               className="inline-flex w-fit items-center gap-2 text-sm text-muted transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"

@@ -27,7 +27,7 @@ export const PERSONAS: Record<Persona, PersonaConfig> = {
     id: "motion",
     name: "Motion",
     path: "/motion",
-    tagline: "...bringing interfaces to life through movement.",
+    tagline: "...I design motion that guides attention.",
     icon: "movie_filter",
     sections: [
       { label: "Reel", href: "#reel" },
@@ -40,7 +40,7 @@ export const PERSONAS: Record<Persona, PersonaConfig> = {
     id: "developer",
     name: "Developer",
     path: "/",
-    tagline: "...architecting scalable, logic-driven systems.",
+    tagline: "...I ship production Solana programs in Rust, and I build the full-stack apps around them.",
     icon: "code",
     sections: [
       { label: "Projects", href: "#projects" },
@@ -53,7 +53,7 @@ export const PERSONAS: Record<Persona, PersonaConfig> = {
     id: "writer",
     name: "Writer",
     path: "/writer",
-    tagline: "...crafting narratives that convert and connect.",
+    tagline: "...I write to explain, not to impress.",
     icon: "edit_note",
     sections: [
       { label: "Articles", href: "#articles" },

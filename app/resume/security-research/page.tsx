@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import PersonaChrome from "@/app/components/PersonaChrome";
 import PersonaFooter from "@/app/components/PersonaFooter";
+import type { NavSection } from "@/lib/personas";
 
 /**
  * Security-research résumé, rendered from public/security-research-resume.md so
@@ -15,6 +16,12 @@ import PersonaFooter from "@/app/components/PersonaFooter";
  * Resume button in the hero and the terminal contact block still point at the
  * general /resume.pdf.
  */
+
+// One long document, so the nav just points back at the portfolio sections.
+const NAV: NavSection[] = [
+  { label: "Résumé", href: "#resume" },
+  { label: "Findings", href: "/security-research#findings" },
+];
 
 const MD_FILE = "security-research-resume.md";
 const PDF_FILE = "security-research-resume.pdf";
@@ -39,7 +46,7 @@ export default async function SecurityResearchResumePage() {
       data-persona="developer"
       className="relative min-h-screen overflow-x-hidden bg-base pb-28 font-mono text-ink"
     >
-      <PersonaChrome persona="developer" />
+      <PersonaChrome persona="developer" sections={NAV} />
 
       <article className="mx-auto max-w-reading px-6 pt-24 md:pt-28">
         <Link
@@ -86,7 +93,7 @@ export default async function SecurityResearchResumePage() {
           </div>
         </header>
 
-        <div className="prose-writer page-enter mt-10">
+        <div id="resume" className="prose-writer page-enter mt-10 scroll-mt-24">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{body}</ReactMarkdown>
         </div>
       </article>

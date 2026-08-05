@@ -64,6 +64,9 @@ create table if not exists public.collaborations (
   role       text not null default '',
   logo_url   text,
   link_url   text,
+  -- Client, Security Research, Hackathon, Open Source, Community, Partner
+  -- (migration 007).
+  category   text,
   sort_order integer not null default 0
 );
 
@@ -71,6 +74,7 @@ create table if not exists public.collaborations (
 alter table public.collaborations add column if not exists logo_url   text;
 alter table public.collaborations add column if not exists link_url   text;
 alter table public.collaborations add column if not exists sort_order integer not null default 0;
+alter table public.collaborations add column if not exists category   text;
 
 create table if not exists public.toolkit_items (
   id         uuid primary key default gen_random_uuid(),

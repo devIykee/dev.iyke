@@ -45,6 +45,8 @@ export interface Collaboration {
   logo_url: string | null;
   // If set, the org name / row becomes a clickable link (often a Writer blog post).
   link_url: string | null;
+  // Client, Security Research, Hackathon, Open Source, Community, Partner.
+  category?: string | null;
   sort_order: number;
 }
 

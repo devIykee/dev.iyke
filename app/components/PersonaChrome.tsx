@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import type { Persona } from "@/lib/types";
 import { PERSONAS, PERSONA_ORDER } from "@/lib/personas";
+import type { NavSection } from "@/lib/personas";
 import { HAMBURGER, DROPDOWN, PILL } from "@/lib/themes";
 import ThemeToggle from "./ThemeToggle";
 
@@ -23,14 +24,27 @@ import ThemeToggle from "./ThemeToggle";
  *
  * Colors come from semantic theme tokens so the chrome follows persona × mode.
  */
-export default function PersonaChrome({ persona }: { persona: Persona }) {
+export default function PersonaChrome({
+  persona,
+  sections,
+}: {
+  persona: Persona;
+  /**
+   * Overrides the persona's default section links. Pages that are not the
+   * persona home (tag showcases, /security-research) have different sections,
+   * so reusing Projects/Toolkit/Collaborations there would point at anchors
+   * that do not exist. Styling and behaviour are unchanged.
+   */
+  sections?: NavSection[];
+}) {
   const [open, setOpen] = useState(false);
   const [hidden, setHidden] = useState(false); // hide-on-scroll-down
   const [active, setActive] = useState(0); // scroll-spy index
   const menuRef = useRef<HTMLDivElement>(null);
   const lastY = useRef(0);
   const config = PERSONAS[persona];
-  const sectionIds = config.sections.map((s) => s.href.replace(/^#/, ""));
+  const navSections = sections ?? config.sections;
+  const sectionIds = navSections.map((s) => s.href.replace(/^#/, ""));
 
   // Close dropdown on Escape or outside click.
   useEffect(() => {
@@ -93,7 +107,7 @@ export default function PersonaChrome({ persona }: { persona: Persona }) {
     els.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [persona]);
+  }, [persona, sections]);
 
   const onNavClick = useCallback((i: number) => setActive(i), []);
 
@@ -189,7 +203,7 @@ export default function PersonaChrome({ persona }: { persona: Persona }) {
           aria-label="Section navigation"
           className={`nav-bounce flex w-fit max-w-[calc(100vw-2rem)] items-center gap-1 overflow-x-auto rounded-full px-2 py-1.5 font-chrome no-scrollbar transition-[box-shadow] duration-300 sm:max-w-[calc(100vw-16rem)] ${PILL.glass}`}
         >
-          {config.sections.map((s, i) => (
+          {navSections.map((s, i) => (
             <a
               key={s.href}
               href={s.href}

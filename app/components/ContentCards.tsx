@@ -83,23 +83,46 @@ export function ToolkitChip({ item }: { item: ToolkitItem }) {
 }
 
 /**
- * Collaboration row — a table-like row: logo + org (clickable if link_url) on
- * the left, role on the right. Hairline divider between rows.
+ * Monogram used when an org has no logo file. Up to two initials, taken from
+ * the first two words, so "Superteam Earn" reads SE and "Ledger" reads L.
+ * Deliberately not a fetched third-party logo: no external requests and no
+ * questions about trademark use.
+ */
+function monogram(org: string): string {
+  const words = org
+    // Split on spaces and on camelCase humps, so FlowVault reads FV and
+    // CredChain reads CC rather than both collapsing to their first two letters.
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/[^A-Za-z0-9 ]/g, " ")
+    .split(/\s+/)
+    .filter(Boolean);
+  if (!words.length) return "?";
+  if (words.length === 1) return words[0][0].toUpperCase();
+  return (words[0][0] + words[1][0]).toUpperCase();
+}
+
+/**
+ * Collaboration row: mark and org on the left, what the work was in the middle,
+ * category on the right. Collapses to a stack on small screens so the role text
+ * keeps a readable measure.
  */
 export function CollaborationRow({ c }: { c: Collaboration }) {
-  const logo = c.logo_url ? (
-    <span className="relative block h-7 w-7 shrink-0 overflow-hidden rounded-sm border border-border bg-surface">
+  const mark = c.logo_url ? (
+    <span className="relative block h-8 w-8 shrink-0 overflow-hidden rounded-md border border-border bg-surface">
       <AppImage
         src={c.logo_url}
         alt={`${c.org} logo`}
         fill
-        sizes="28px"
+        sizes="32px"
         className="object-contain"
       />
     </span>
   ) : (
-    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-sm border border-border bg-surface text-[11px] font-bold text-muted">
-      {c.org.charAt(0).toUpperCase()}
+    <span
+      aria-hidden="true"
+      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border bg-surface text-[10px] font-bold tracking-tight text-accent"
+    >
+      {monogram(c.org)}
     </span>
   );
 
@@ -118,12 +141,19 @@ export function CollaborationRow({ c }: { c: Collaboration }) {
   );
 
   return (
-    <div className="grid grid-cols-[1fr_1fr] items-center gap-4 border-b border-border-soft py-4 transition-colors duration-200 hover:bg-surface">
-      <span className="flex items-center gap-3">
-        {logo}
-        {org}
+    <div className="grid grid-cols-1 items-center gap-x-4 gap-y-1.5 border-b border-border-soft py-4 transition-colors duration-200 hover:bg-surface sm:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)_auto]">
+      <span className="flex min-w-0 items-center gap-3">
+        {mark}
+        <span className="min-w-0 truncate">{org}</span>
       </span>
-      <span className="text-sm text-muted">{c.role}</span>
+      <span className="pl-11 text-sm leading-snug text-muted sm:pl-0">
+        {c.role}
+      </span>
+      {c.category && (
+        <span className="ml-11 w-fit whitespace-nowrap rounded-full border border-border px-2.5 py-0.5 text-[10px] uppercase tracking-wider text-muted sm:ml-0 sm:justify-self-end">
+          {c.category}
+        </span>
+      )}
     </div>
   );
 }

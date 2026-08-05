@@ -116,11 +116,12 @@ export default async function DeveloperPage() {
             </header>
             {collaborations.length > 0 ? (
               <>
-                <div className="grid grid-cols-[1fr_1fr] gap-4 border-b border-border pb-2 text-xs uppercase tracking-wider text-muted">
+                <div className="hidden grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)_auto] gap-4 border-b border-border pb-2 text-xs uppercase tracking-wider text-muted sm:grid">
                   <span>Organization</span>
-                  <span>Role / Contribution</span>
+                  <span>Contribution</span>
+                  <span className="justify-self-end">Category</span>
                 </div>
-                <AutoScrollY heightClass="max-h-[280px]">
+                <AutoScrollY heightClass="max-h-[340px]">
                   {collaborations.map((c) => (
                     <CollaborationRow key={c.id} c={c} />
                   ))}

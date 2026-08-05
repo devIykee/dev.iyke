@@ -138,7 +138,21 @@ const COLLAB_CONFIG: ResourceConfig = {
   fields: [
     { name: "org", label: "Organization", type: "text", required: true },
     { name: "role", label: "Role / Contribution", type: "text" },
-    { name: "logo_url", label: "Logo", type: "image" },
+    { name: "logo_url", label: "Logo (optional, falls back to a text badge)", type: "image" },
+    {
+      name: "category",
+      label: "Category",
+      type: "select",
+      options: [
+        { value: "Client", label: "Client" },
+        { value: "Security Research", label: "Security Research" },
+        { value: "Hackathon", label: "Hackathon" },
+        { value: "Open Source", label: "Open Source" },
+        { value: "Community", label: "Community" },
+        { value: "Partner", label: "Partner" },
+        { value: "Organization", label: "Organization" },
+      ],
+    },
     {
       name: "link_url",
       label: "Link URL (optional — e.g. a blog post; makes the org clickable)",
