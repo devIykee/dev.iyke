@@ -42,13 +42,13 @@ const config: Config = {
         outline: "#7a7582",
         "outline-variant": "#cbc4d2",
 
-        // ---- Developer persona (from code.html) ----
-        "dev-bg": "#0d0d0d",
-        "dev-bg-elevated": "#1a1a1a",
+        // ---- Developer persona (monochrome terminal) ----
+        "dev-bg": "#0a0a0a",
+        "dev-bg-elevated": "#161616",
         "dev-bg-deep": "#050505",
-        "terminal-green": "#00ff00",
-        "grid-border": "#333333",
-        "dev-muted": "#888888",
+        "terminal-white": "#ffffff",
+        "grid-border": "#303030",
+        "dev-muted": "#808080",
 
         // ---- Motion persona (off-white + Electric Blue) ----
         "motion-bg": "#f7f7f5",
